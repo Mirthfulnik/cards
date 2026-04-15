@@ -521,9 +521,42 @@ html, body {
 .btn-new-game {
   background: linear-gradient(120deg, var(--accent) 0%, #FF9500 100%);
   color: #080810; font-weight: 700;
+  position: relative;
+  overflow: hidden;
 }
 .btn-new-game:disabled {
-  opacity: 0.35; cursor: not-allowed;
+  /* dim the text/icon but keep shape visible */
+  color: rgba(8,8,16,0.45);
+  cursor: not-allowed;
+  /* dark base so the sweep is visible */
+  background: rgba(255,204,0,0.18);
+}
+/* The sweep overlay — conic-gradient rotating clockwise */
+.btn-new-game::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(
+    from -90deg,
+    rgba(255,204,0,0.55) var(--sweep, 0deg),
+    transparent var(--sweep, 0deg)
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.btn-new-game.sweeping::after {
+  opacity: 1;
+}
+/* When enabled again — flash the full button */
+@keyframes btnUnlock {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.btn-new-game.unlocked {
+  animation: btnUnlock 320ms var(--ease-out) forwards;
 }
 .btn-yandex  { background: #FFCC00; color: #080810; }
 .btn-vk      { background: #0077FF; color: #fff; }
@@ -711,11 +744,11 @@ html, body {
       </button>
       <a id="btn-yandex" class="win-btn btn-yandex" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.572 2C9.428 2 7 4.258 7 8.192c0 2.84 1.388 4.755 3.87 5.734L7.1 22h3.045l3.573-7.638h.024V22H16.5V2h-2.928zm0 9.98h-.78V4.34h.78c1.868 0 2.844 1.15 2.844 3.748 0 2.61-.976 3.892-2.844 3.892z"/></svg>
-        Яндекс
+        Я.Музыка
       </a>
       <a id="btn-vk" class="win-btn btn-vk" target="_blank">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.898 7.67c.13-.43 0-.75-.614-.75h-2.032c-.517 0-.755.273-.885.574 0 0-1.033 2.517-2.496 4.15-.473.474-.688.624-.946.624-.13 0-.317-.15-.317-.58V7.67c0-.516-.15-.75-.58-.75H10.3c-.322 0-.516.24-.516.467 0 .49.731.603.806 1.983v2.994c0 .655-.118.773-.376.773-.688 0-2.363-2.529-3.356-5.422C6.664 7.13 6.47 6.92 5.95 6.92H3.917c-.58 0-.696.273-.696.574 0 .537.688 3.196 3.205 6.715 1.678 2.408 4.04 3.714 6.19 3.714 1.29 0 1.45-.29 1.45-.79v-1.827c0-.58.122-.695.53-.695.3 0 .817.15 2.022 1.312 1.377 1.377 1.604 1.994 2.378 1.994h2.033c.58 0 .87-.29.703-.861-.183-.57-.84-1.396-1.72-2.376-.473-.559-1.183-1.162-1.398-1.462-.3-.387-.215-.559 0-.904 0 0 2.473-3.476 2.731-4.658z"/></svg>
-        ВК
+        ВК Музыка
       </a>
       <a id="btn-zvuk" class="win-btn btn-zvuk" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 14.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9zm0-7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
@@ -731,7 +764,7 @@ html, body {
       </a>
       <a id="btn-apple" class="win-btn btn-apple" target="_blank">
         <svg width="13" height="14" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.8 135.4-317.9 269-317.9 100.6 0 164.4 55.8 220.3 55.8 53.3 0 127.3-58.8 238.3-58.8zm-111 -192.9c50.7-60.2 86.4-144.1 86.4-228 0-11.1-.6-22.3-2.6-31.4-82.6 3.2-180.9 55.2-239.6 125.7-45.5 52.7-88.9 136.6-88.9 221.9 0 12.3 2 24.6 3.2 28.5 5.2.6 13.6 1.9 22 1.9 73.9 0 165.4-49.4 219.5-118.6z"/></svg>
-        Apple
+        Apple Music
       </a>
     </div>
   </div>
@@ -867,6 +900,11 @@ const App = {
   },
 
   newGame() {
+    // Cancel sweep animation
+    if (_newGameTimer) { cancelAnimationFrame(_newGameTimer); _newGameTimer = null; }
+    const btnNew = document.getElementById('btn-new-game');
+    btnNew.classList.remove('sweeping', 'unlocked');
+    btnNew.style.setProperty('--sweep', '0deg');
     // Stop reel before going back to game
     const vid = document.getElementById('win-video');
     vid.pause();
@@ -1002,7 +1040,7 @@ function onCardClick(i, el) {
 // ═══════════════════════════════════════
 // WIN SCREEN
 // ═══════════════════════════════════════
-let _newGameTimer = null;
+let _newGameTimer = null; // rAF id for sweep
 
 function showWin() {
   const release = state.currentRelease;
@@ -1027,8 +1065,35 @@ function showWin() {
 
   const btnNew = document.getElementById('btn-new-game');
   btnNew.disabled = true;
-  clearTimeout(_newGameTimer);
-  _newGameTimer = setTimeout(() => { btnNew.disabled = false; }, 5000);
+  btnNew.classList.remove('unlocked');
+  btnNew.classList.add('sweeping');
+  btnNew.style.setProperty('--sweep', '0deg');
+
+  // Cancel any previous animation
+  if (_newGameTimer) { cancelAnimationFrame(_newGameTimer); _newGameTimer = null; }
+  if (window._sweepInterval) { clearInterval(window._sweepInterval); }
+
+  const DURATION = 5000;
+  const startTime = performance.now();
+
+  function animateSweep(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / DURATION, 1);
+    const deg = Math.round(progress * 360);
+    btnNew.style.setProperty('--sweep', deg + 'deg');
+
+    if (progress < 1) {
+      _newGameTimer = requestAnimationFrame(animateSweep);
+    } else {
+      // Sweep complete — unlock
+      btnNew.disabled = false;
+      btnNew.classList.remove('sweeping');
+      btnNew.classList.add('unlocked');
+      btnNew.style.setProperty('--sweep', '0deg');
+      _newGameTimer = null;
+    }
+  }
+  _newGameTimer = requestAnimationFrame(animateSweep);
 
   showScreen('win');
   spawnConfetti();
