@@ -123,7 +123,6 @@
     75%     { transform: rotateY(180deg) translateX(5px); }
   }
 
-  /* WIN */
   #win-overlay {
     display: none; position: fixed; inset: 0; z-index: 200;
     flex-direction: column; background: #000;
@@ -197,7 +196,7 @@
     </div>
     <div id="mode-row">
       <button class="mode-btn active" data-mode="16">16</button>
-      <button class="mode-btn" data-mode="32">32</button>
+      <button class="mode-btn" data-mode="36">36</button>
       <button class="mode-btn" data-mode="64">64</button>
     </div>
   </div>
@@ -209,14 +208,14 @@
 <div id="win-overlay">
   <button id="close-btn">✕</button>
   <div id="video-wrap">
-    <video id="win-video" autoplay playsinline loop muted>
-      <source src="https://dl.dropboxusercontent.com/scl/fi/jdpwyqto6uyv90bnh6q2u/1004-SAYAN-get.gt.mp4?rlkey=qbr4h4cj64jqkeowffojeo7za&st=l5t6cyo5">
+    <video id="win-video" autoplay playsinline loop muted playsinline>
+      <source src="https://dl.dropboxusercontent.com/scl/fi/jdpwyqto6uyv90bnh6q2u/1004-SAYAN-get.gt.mp4?rlkey=qbr4h4cj64jqkeowffojeo7za&st=l5t6cyo5" type="video/mp4">
     </video>
   </div>
   <div id="prize-bar">
     <img id="prize-cover" src="https://dl.dropboxusercontent.com/scl/fi/d2lkhhxas7lsnuquqeho1/3000.jpg?rlkey=1onrc0rf0y4k2nqneeqje5tx1&st=9pyh8pjk" alt="обложка">
     <div id="prize-info">
-      <div id="prize-title">SAYAN — Get</div>
+      <div id="prize-title">SAYAN — Malboro</div>
       <div id="prize-sub">Слушать трек:</div>
       <div id="prize-links">
         <a class="music-btn ym-btn" href="https://music.yandex.ru/album/41489388/track/150053393?utm_source=web&utm_medium=copy_link" target="_blank">♪ Яндекс Музыка</a>
@@ -240,7 +239,13 @@ function shuffle(arr) {
   return a;
 }
 
-// Key fix: measure available space AFTER layout, compute card px size
+// cols/rows config per mode
+const CONFIGS = {
+  16: [4, 4],
+  36: [6, 6],
+  64: [8, 8]
+};
+
 function calcSize(cols, rows, gap) {
   const wrap = document.getElementById('grid-wrap');
   const W = wrap.clientWidth  - 20;
@@ -267,9 +272,7 @@ function initGame(n) {
 function renderGrid() {
   const grid = document.getElementById('grid');
   const gap = 6;
-  const cols = mode === 16 ? 4 : mode === 32 ? 6 : 8;
-  const rows = mode / cols;
-
+  const [cols, rows] = CONFIGS[mode];
   const size = calcSize(cols, rows, gap);
   const emoji = Math.max(10, Math.floor(size * 0.45));
 
@@ -289,7 +292,7 @@ function renderGrid() {
     card.style.height = size + 'px';
     card.innerHTML = `
       <div class="card-inner">
-        <div class="card-back" style="font-size:${Math.floor(emoji*0.55)}px">?</div>
+        <div class="card-back" style="font-size:${Math.floor(emoji * 0.55)}px">?</div>
         <div class="card-front" style="font-size:${emoji}px">${em}</div>
       </div>`;
     card.addEventListener('click', () => flip(i, card));
