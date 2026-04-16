@@ -81,6 +81,11 @@ html, body {
 
 /* ══ SCREEN 1 — SPLASH ══════════════════ */
 #screen-splash { background: #fff; align-items: center; justify-content: center; gap: 36px; }
+#splash-created {
+  position: absolute; top: max(32px, env(safe-area-inset-top));
+  font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #aaa; font-family: 'Outfit', sans-serif;
+}
 .splash-logo { clip-path: inset(0 0 100% 0); transition: clip-path 520ms var(--ease-drawer); }
 .splash-logo:nth-child(1) { transition-delay: 0ms; }
 .splash-logo:nth-child(2) { transition-delay: 180ms; }
@@ -284,18 +289,20 @@ html, body {
 #win-track-reveal.show #reveal-artist,
 #win-track-reveal.show #reveal-title { transform: translateY(0); opacity: 1; }
 
-/* Mini track bar — sits above win-bar-shell, slides in from below */
+/* Mini track bar — absolute at bottom of video, slides from right to left */
 #win-mini-bar {
-  flex-shrink: 0;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 6;
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 16px;
-  background: rgba(8,8,16,0.95);
-  border-top: 0.5px solid rgba(255,255,255,0.08);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-  transform: translateY(100%);
-  transition: transform 480ms var(--ease-drawer);
+  padding: 12px 16px;
+  background: linear-gradient(to top, rgba(8,8,16,0.97) 0%, rgba(8,8,16,0.85) 100%);
+  border-top: 0.5px solid rgba(255,255,255,0.10);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  transform: translateX(110%);
+  transition: transform 500ms var(--ease-drawer);
 }
-#win-mini-bar.show { transform: translateY(0); }
+#win-mini-bar.show { transform: translateX(0); }
 
 #mini-cover-shell { width: 44px; height: 44px; border-radius: 8px; padding: 1.5px; background: linear-gradient(135deg, rgba(255,204,0,0.4), rgba(255,107,53,0.3)); flex-shrink: 0; }
 #mini-cover { width: 100%; height: 100%; border-radius: calc(8px - 1.5px); object-fit: cover; display: block; }
@@ -383,6 +390,7 @@ html, body {
 .track-artist { font-family: 'Unbounded', sans-serif; font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .track-title { font-size: 12px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .track-date { font-size: 10px; color: var(--text3); flex-shrink: 0; }
+.track-item:active { opacity: 0.75; transform: scale(0.98); transition: opacity 100ms ease, transform 100ms ease; }
 #profile-no-tracks { font-size: 13px; color: var(--text3); text-align: center; padding: 20px 0; }
 
 /* Confetti */
@@ -404,16 +412,17 @@ html, body {
 <!-- SCREEN 0: NICKNAME -->
 <div id="screen-nickname" class="screen">
   <div id="nick-logo">Mirazh</div>
-  <div id="nick-sub"></div>
-  <div id="nick-label">Ваше имя в игре</div>
+  <div id="nick-sub">Игровой маркетплейс<br>от Zhara, Lotus & Ovokacho</div>
+  <div id="nick-label">Твой никнейм</div>
   <div id="nick-input-wrap">
-    <input id="nick-input" type="text" maxlength="16" placeholder="Придумайте имя..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <input id="nick-input" type="text" maxlength="16" placeholder="Введи никнейм..." autocomplete="off" autocorrect="off" spellcheck="false">
   </div>
-  <button id="nick-confirm" disabled onclick="App.saveNickname()">Начать играть</button>
+  <button id="nick-confirm" disabled onclick="App.saveNickname()">Начать играть →</button>
 </div>
 
 <!-- SCREEN 1: SPLASH -->
 <div id="screen-splash" class="screen">
+  <div id="splash-created">Создано</div>
   <div class="splash-logo"><img src="assets/zm.png" alt="Zhara Music"></div>
   <div class="splash-logo"><img src="assets/lm.png" alt="Lotus Music"></div>
   <div class="splash-logo"><img src="assets/ovo.png" alt="Ovokacho"></div>
@@ -424,7 +433,7 @@ html, body {
   <div id="select-header">
     <div id="select-title-wrap">
       <div id="select-title">Mirazh</div>
-      <div id="select-sub">Выберите игру</div>
+      <div id="select-sub">Выбери игру</div>
     </div>
     <div id="profile-pill" onclick="App.goTo('profile')">
       <span id="profile-trophy">🏆</span>
@@ -635,7 +644,7 @@ const WonTracks = {
       // Avoid exact duplicate in last 3 entries
       const recent = list.slice(-3).some(t => t.id === release.id);
       if (!recent) {
-        list.push({ id: release.id, artist: release.artist, title: release.title, cover: release.cover, date: Date.now() });
+        list.push({ id: release.id, artist: release.artist, title: release.title, cover: release.cover, video: release.video, date: Date.now() });
         localStorage.setItem(this.key, JSON.stringify(list));
       }
     } catch {}
@@ -726,10 +735,13 @@ function showScreen(id) {
 // ═══════════════════════════════════════
 // SPLASH
 // ═══════════════════════════════════════
-function runSplash() {
+function runSplash(afterSplash) {
   showScreen('splash');
   setTimeout(() => document.querySelectorAll('.splash-logo').forEach(el => el.classList.add('visible')), 180);
-  setTimeout(() => App.goTo('select'), 2800);
+  setTimeout(() => {
+    if (afterSplash) afterSplash();
+    else App.goTo('select');
+  }, 2800);
 }
 
 // ═══════════════════════════════════════
@@ -744,7 +756,7 @@ const App = {
     const val = document.getElementById('nick-input').value.trim();
     if (!val) return;
     Nick.set(val);
-    runSplash();
+    App.goTo('select');
   },
 
   newGame() {
@@ -789,11 +801,10 @@ nickInput.addEventListener('keydown', e => {
 // BOOT — nickname check
 // ═══════════════════════════════════════
 function boot() {
-  if (Nick.exists()) {
-    runSplash();
-  } else {
-    showScreen('nickname');
-  }
+  runSplash(() => {
+    if (Nick.exists()) App.goTo('select');
+    else showScreen('nickname');
+  });
 }
 
 // ═══════════════════════════════════════
@@ -886,6 +897,7 @@ function onGameWon() {
   if (isRecord) setTimeout(()=>recEl.classList.add('show'),600);
   else recEl.classList.remove('show');
 
+  SFX.win();
   showScreen('result');
   spawnConfetti();
 }
@@ -978,9 +990,37 @@ function renderProfile() {
     const d=new Date(t.date);
     const dateStr=d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
     const item=document.createElement('div'); item.className='track-item';
-    item.innerHTML=`<img class="track-cover" src="${t.cover}" alt=""><div class="track-info"><div class="track-artist">${t.artist}</div><div class="track-title">${t.title}</div></div><div class="track-date">${dateStr}</div>`;
+    item.style.cursor='pointer';
+    item.innerHTML=`<img class="track-cover" src="${t.cover}" alt=""><div class="track-info"><div class="track-artist">${t.artist}</div><div class="track-title">${t.title}</div></div><div class="track-date">${dateStr} ▶</div>`;
+    item.addEventListener('click', () => replayTrack(t));
     container.appendChild(item);
   });
+}
+
+// ═══════════════════════════════════════
+// REPLAY TRACK FROM PROFILE
+// ═══════════════════════════════════════
+function replayTrack(trackData) {
+  // Build a minimal release-like object from stored track data
+  const fakeRelease = {
+    id: trackData.id,
+    artist: trackData.artist,
+    title: trackData.title,
+    cover: trackData.cover,
+    video: trackData.video || (state.currentRelease && state.currentRelease.id === trackData.id ? state.currentRelease.video : ''),
+    links: {},
+  };
+  // Try to find full release data for links + video
+  const full = (typeof RELEASES !== 'undefined') && RELEASES.find(r => r.id === trackData.id);
+  if (full) { fakeRelease.video = full.video; fakeRelease.links = full.links; }
+
+  // Temporarily set as current for share/buttons
+  const prev = state.currentRelease;
+  state.currentRelease = fakeRelease;
+
+  // Setup win screen and navigate
+  showScreen('win');
+  setupWinScreen();
 }
 
 // ═══════════════════════════════════════
