@@ -10,23 +10,16 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Easing curves — Emil Kowalski */
   --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-
-  /* Palette — off-black, never pure #000 */
   --dark:    #080810;
   --dark2:   #0f0f1a;
   --accent:  #FFCC00;
   --accent2: #FF6B35;
-
-  /* Surfaces — liquid glass */
-  --glass:         rgba(255,255,255,0.06);
-  --glass-border:  rgba(255,255,255,0.10);
-  --glass-inner:   rgba(255,255,255,0.08);
-  --glass-shine:   rgba(255,255,255,0.12);
-
+  --glass:        rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-shine:  rgba(255,255,255,0.12);
   --text:  #ffffff;
   --text2: rgba(255,255,255,0.50);
   --text3: rgba(255,255,255,0.28);
@@ -42,411 +35,190 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ══════════════════════════════════════
-   SCREEN TRANSITIONS
-   opacity + translateY — spatial depth
-══════════════════════════════════════ */
+/* ── SCREENS ─────────────────────────────── */
 .screen {
   position: fixed; inset: 0;
   display: flex; flex-direction: column;
-  opacity: 0;
-  transform: translateY(6px);
+  opacity: 0; transform: translateY(6px);
   pointer-events: none;
-  transition:
-    opacity 280ms var(--ease-out),
-    transform 280ms var(--ease-out);
+  transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out);
   z-index: 1;
 }
-.screen.active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: all;
-  z-index: 2;
-}
+.screen.active { opacity: 1; transform: translateY(0); pointer-events: all; z-index: 2; }
 
-/* ══════════════════════════════════════
-   SCREEN 1 — SPLASH
-══════════════════════════════════════ */
+/* ══ SCREEN 1 — SPLASH ══════════════════════ */
 #screen-splash {
   background: #ffffff;
-  align-items: center;
-  justify-content: center;
-  gap: 36px;
+  align-items: center; justify-content: center; gap: 36px;
 }
-
 .splash-logo {
-  /* clip-path reveal: wipe from top to bottom — typewriter/print feel */
   clip-path: inset(0 0 100% 0);
-  opacity: 1;
   transition: clip-path 520ms var(--ease-drawer);
 }
 .splash-logo:nth-child(1) { transition-delay: 0ms; }
 .splash-logo:nth-child(2) { transition-delay: 180ms; }
 .splash-logo:nth-child(3) { transition-delay: 360ms; }
+.splash-logo.visible { clip-path: inset(0 0 0% 0); }
+.splash-logo img { height: 44px; width: auto; display: block; object-fit: contain; }
 
-.splash-logo.visible {
-  clip-path: inset(0 0 0% 0);
-}
-.splash-logo img {
-  height: 44px;
-  width: auto;
-  display: block;
-  object-fit: contain;
-}
-
-/* ══════════════════════════════════════
-   SCREEN 2 — GAME SELECT
-══════════════════════════════════════ */
-#screen-select {
-  background: var(--dark);
-  overflow: hidden;
-}
-
-#select-header {
-  flex-shrink: 0;
-  padding: 16px 20px 10px;
-  padding-top: max(16px, env(safe-area-inset-top));
-}
+/* ══ SCREEN 2 — GAME SELECT ═════════════════ */
+#screen-select { background: var(--dark); overflow: hidden; }
+#select-header { flex-shrink: 0; padding: 16px 20px 10px; padding-top: max(16px, env(safe-area-inset-top)); }
 #select-title {
   font-family: 'Unbounded', sans-serif;
-  font-size: 20px; font-weight: 900;
-  letter-spacing: -0.5px;
+  font-size: 20px; font-weight: 900; letter-spacing: -0.5px;
   background: linear-gradient(120deg, var(--accent) 0%, var(--accent2) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-#select-sub {
-  font-size: 13px;
-  color: var(--text2);
-  margin-top: 2px;
-  font-weight: 400;
-}
-
+#select-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
 #games-grid {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
   padding: 10px 12px 32px;
-  /* Masonry-feel: 2 cols, varied heights per nth-child */
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  align-content: start;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start;
 }
 #games-grid::-webkit-scrollbar { display: none; }
 
-/* Double-Bezel card outer shell */
 .game-card-shell {
-  border-radius: 22px;
-  padding: 1.5px;
+  border-radius: 22px; padding: 1.5px;
   background: var(--glass-border);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 140ms var(--ease-out);
-  /* Pinterest heights */
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 360ms var(--ease-out), transform 360ms var(--ease-out);
   min-height: 160px;
 }
-.game-card-shell:nth-child(1) { min-height: 186px; }
-.game-card-shell:nth-child(2) { min-height: 148px; }
-.game-card-shell:nth-child(3) { min-height: 158px; }
-.game-card-shell:nth-child(4) { min-height: 174px; }
-.game-card-shell:nth-child(5) { min-height: 162px; }
-.game-card-shell:nth-child(6) { min-height: 150px; }
-
-.game-card-shell:active { transform: scale(0.955); }
-
+.game-card-shell.revealed { opacity: 1; transform: translateY(0); }
+.game-card-shell:nth-child(1) { min-height: 186px; transition-delay: 0ms; }
+.game-card-shell:nth-child(2) { min-height: 148px; transition-delay: 50ms; }
+.game-card-shell:nth-child(3) { min-height: 158px; transition-delay: 100ms; }
+.game-card-shell:nth-child(4) { min-height: 174px; transition-delay: 150ms; }
+.game-card-shell:nth-child(5) { min-height: 162px; transition-delay: 200ms; }
+.game-card-shell:nth-child(6) { min-height: 150px; transition-delay: 250ms; }
+.game-card-shell:active { transform: scale(0.955) !important; }
+.game-card-shell.active-game { background: linear-gradient(135deg, rgba(255,204,0,0.5), rgba(255,107,53,0.3)); }
 @media (hover: hover) and (pointer: fine) {
   .game-card-shell:hover { transform: scale(1.02); }
 }
 
-/* Active game — glowing border */
-.game-card-shell.active-game {
-  background: linear-gradient(135deg, rgba(255,204,0,0.5), rgba(255,107,53,0.3));
-}
-
-/* Double-Bezel inner core */
 .game-card-inner {
-  border-radius: calc(22px - 1.5px);
-  height: 100%;
-  min-height: inherit;
+  border-radius: calc(22px - 1.5px); height: 100%; min-height: inherit;
   background: var(--glass);
-  /* Inner highlight — liquid glass refraction */
   box-shadow: inset 0 1px 0 var(--glass-shine);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 20px 14px;
-  gap: 10px;
-  position: relative;
-  overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px 14px; gap: 10px; position: relative; overflow: hidden;
 }
-
 .game-card-shell.active-game .game-card-inner {
   background: linear-gradient(145deg, rgba(255,204,0,0.12), rgba(255,107,53,0.07));
 }
-
-/* Subtle shimmer line at top of active card */
 .game-card-shell.active-game .game-card-inner::before {
-  content: '';
-  position: absolute; top: 0; left: 10%; right: 10%;
-  height: 1px;
+  content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,204,0,0.6), transparent);
 }
+.game-card-icon { font-size: 32px; line-height: 1; }
+.game-card-name { font-family: 'Unbounded', sans-serif; font-size: 11px; font-weight: 700; text-align: center; line-height: 1.3; }
+.game-card-badge { position: absolute; top: 10px; right: 10px; border-radius: 20px; padding: 3px 8px; font-size: 9px; font-weight: 700; font-family: 'Unbounded', sans-serif; text-transform: uppercase; letter-spacing: 0.04em; }
+.badge-play { background: var(--accent); color: #080810; }
+.badge-soon { background: rgba(255,255,255,0.08); border: 0.5px solid var(--glass-border); color: var(--text3); }
 
-.game-card-icon {
-  font-size: 32px; line-height: 1;
-}
-.game-card-name {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px; font-weight: 700;
-  color: var(--text);
-  text-align: center; line-height: 1.3;
-}
-.game-card-badge {
-  position: absolute; top: 10px; right: 10px;
-  border-radius: 20px;
-  padding: 3px 8px;
-  font-size: 9px; font-weight: 700;
-  font-family: 'Unbounded', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.badge-play {
-  background: var(--accent);
-  color: #080810;
-}
-.badge-soon {
-  background: rgba(255,255,255,0.08);
-  border: 0.5px solid var(--glass-border);
-  color: var(--text3);
-}
-
-/* Stagger entrance for grid cards */
-.game-card-shell {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 360ms var(--ease-out),
-    transform 360ms var(--ease-out),
-    scale 140ms var(--ease-out);
-}
-.game-card-shell.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-.game-card-shell:nth-child(1) { transition-delay: 0ms; }
-.game-card-shell:nth-child(2) { transition-delay: 50ms; }
-.game-card-shell:nth-child(3) { transition-delay: 100ms; }
-.game-card-shell:nth-child(4) { transition-delay: 150ms; }
-.game-card-shell:nth-child(5) { transition-delay: 200ms; }
-.game-card-shell:nth-child(6) { transition-delay: 250ms; }
-
-/* ══════════════════════════════════════
-   SCREEN 3 — DIFFICULTY
-══════════════════════════════════════ */
-#screen-difficulty {
-  background: var(--dark);
-  align-items: stretch;
-  justify-content: flex-end;
-}
-
-#diff-bg {
-  position: absolute; inset: 0;
-  background-size: cover; background-position: center;
-  z-index: 0;
-}
+/* ══ SCREEN 3 — DIFFICULTY ══════════════════ */
+#screen-difficulty { background: var(--dark); align-items: stretch; justify-content: flex-end; }
+#diff-bg { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }
 #diff-bg::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(8,8,16,0.15) 0%,
-    rgba(8,8,16,0.60) 40%,
-    rgba(8,8,16,0.98) 65%
-  );
+  background: linear-gradient(to bottom, rgba(8,8,16,0.15) 0%, rgba(8,8,16,0.60) 40%, rgba(8,8,16,0.98) 65%);
 }
-
 #diff-back {
-  position: absolute;
-  top: max(16px, env(safe-area-inset-top));
-  left: 16px;
-  z-index: 10;
-  /* Double-bezel back button */
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: rgba(8,8,16,0.45);
-  border: 0.5px solid var(--glass-shine);
+  position: absolute; top: max(16px, env(safe-area-inset-top)); left: 16px; z-index: 10;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(8,8,16,0.45); border: 0.5px solid var(--glass-shine);
   box-shadow: inset 0 1px 0 var(--glass-shine);
-  color: #fff; font-size: 18px;
-  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center;
   cursor: pointer; -webkit-tap-highlight-color: transparent;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   transition: transform 120ms var(--ease-out), opacity 120ms var(--ease-out);
 }
 #diff-back:active { transform: scale(0.92); opacity: 0.7; }
-
 #diff-content {
   position: relative; z-index: 1;
-  padding: 28px 18px;
-  padding-bottom: max(36px, env(safe-area-inset-bottom));
+  padding: 28px 18px; padding-bottom: max(36px, env(safe-area-inset-bottom));
   display: flex; flex-direction: column; gap: 14px;
 }
-
-#diff-game-name {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 22px; font-weight: 900;
-  letter-spacing: -0.5px;
-}
-#diff-prompt {
-  font-size: 13px; color: var(--text2);
-  margin-top: -6px; font-weight: 400;
-}
-
-#diff-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-/* Double-Bezel difficulty buttons */
+#diff-game-name { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+#diff-prompt { font-size: 13px; color: var(--text2); margin-top: -6px; }
+#diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .diff-shell {
-  border-radius: 20px;
-  padding: 1.5px;
-  background: var(--glass-border);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  border-radius: 20px; padding: 1.5px; background: var(--glass-border);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
   transition: transform 130ms var(--ease-out), background 130ms var(--ease-out);
 }
 .diff-shell:active { transform: scale(0.955); }
-.diff-shell:active .diff-core {
-  background: rgba(255,204,0,0.08);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .diff-shell:hover { background: rgba(255,204,0,0.25); }
-}
-
+@media (hover: hover) and (pointer: fine) { .diff-shell:hover { background: rgba(255,204,0,0.25); } }
 .diff-core {
-  border-radius: calc(20px - 1.5px);
-  background: var(--glass);
+  border-radius: calc(20px - 1.5px); background: var(--glass);
   box-shadow: inset 0 1px 0 var(--glass-shine);
-  padding: 22px 14px 18px;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 5px;
-  transition: background 130ms var(--ease-out);
+  padding: 22px 14px 18px; display: flex; flex-direction: column; align-items: center; gap: 5px;
 }
 .diff-num {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 30px; font-weight: 900;
-  line-height: 1;
+  font-family: 'Unbounded', sans-serif; font-size: 30px; font-weight: 900; line-height: 1;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.diff-label {
-  font-size: 11px; color: var(--text2);
-  font-weight: 500; text-align: center;
-  font-family: 'Outfit', sans-serif;
-}
+.diff-label { font-size: 11px; color: var(--text2); font-weight: 500; text-align: center; }
 
-/* ══════════════════════════════════════
-   SCREEN 4 — GAME
-══════════════════════════════════════ */
+/* ══ SCREEN 4 — GAME ════════════════════════ */
 #screen-game { overflow: hidden; }
-
-#game-bg {
-  position: absolute; inset: 0;
-  background-size: cover; background-position: center;
-  z-index: 0;
-}
-#game-bg::after {
-  content: ''; position: absolute; inset: 0;
-  background: rgba(8,6,18,0.70);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-}
-
+#game-bg { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }
+#game-bg::after { content: ''; position: absolute; inset: 0; background: rgba(8,6,18,0.70); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
 #game-header {
   position: relative; z-index: 10;
-  padding: 10px 14px 6px;
-  padding-top: max(10px, env(safe-area-inset-top));
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px;
+  padding: 10px 14px 6px; padding-top: max(10px, env(safe-area-inset-top));
+  flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
-
 #game-back {
   width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(0,0,0,0.35);
-  border: 0.5px solid var(--glass-shine);
+  background: rgba(0,0,0,0.35); border: 0.5px solid var(--glass-shine);
   box-shadow: inset 0 1px 0 var(--glass-shine);
-  color: #fff; font-size: 15px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-  flex-shrink: 0;
+  color: #fff; font-size: 15px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; flex-shrink: 0;
   transition: transform 110ms var(--ease-out), opacity 110ms var(--ease-out);
 }
 #game-back:active { transform: scale(0.88); opacity: 0.7; }
-
-#game-stats { display: flex; gap: 6px; flex: 1; justify-content: flex-end; }
-
+#game-stats { display: flex; gap: 6px; flex: 1; justify-content: flex-end; align-items: center; }
 .stat {
-  background: rgba(255,255,255,0.09);
-  border: 0.5px solid rgba(255,255,255,0.13);
+  background: rgba(255,255,255,0.09); border: 0.5px solid rgba(255,255,255,0.13);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
   border-radius: 20px; padding: 3px 11px;
-  font-size: 12px; font-weight: 500;
-  color: rgba(255,255,255,0.65);
-  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.65);
 }
 .stat span { color: #fff; font-weight: 600; }
-
-#grid-wrap {
-  position: relative; z-index: 10;
-  flex: 1; min-height: 0;
-  display: flex; align-items: center; justify-content: center;
-  padding: 6px 10px;
+#timer-display {
+  background: rgba(255,255,255,0.09); border: 0.5px solid rgba(255,255,255,0.13);
+  border-radius: 20px; padding: 3px 11px;
+  font-size: 12px; font-weight: 600; color: #fff;
+  font-family: 'Outfit', sans-serif; letter-spacing: 0.02em;
 }
+#grid-wrap { position: relative; z-index: 10; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 6px 10px; }
 #grid { display: grid; }
 
 /* Cards */
-.card {
-  position: relative; border-radius: 10px;
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-}
+.card { position: relative; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .card-inner {
   position: absolute; inset: 0; border-radius: 10px;
-  transform-style: preserve-3d;
-  transition: transform 240ms var(--ease-out);
+  transform-style: preserve-3d; transition: transform 240ms var(--ease-out);
 }
 .card-front, .card-back {
   position: absolute; inset: 0; border-radius: 10px;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   display: flex; align-items: center; justify-content: center;
 }
-.card-back {
-  background: rgba(255,255,255,0.09);
-  border: 0.5px solid rgba(255,255,255,0.15);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.18);
-}
-.card-front {
-  background: rgba(255,255,255,0.16);
-  border: 0.5px solid rgba(255,255,255,0.30);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-  transform: rotateY(180deg);
-}
+.card-back { background: rgba(255,255,255,0.09); border: 0.5px solid rgba(255,255,255,0.15); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); color: rgba(255,255,255,0.18); }
+.card-front { background: rgba(255,255,255,0.16); border: 0.5px solid rgba(255,255,255,0.30); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12); transform: rotateY(180deg); }
 .card.flipped .card-inner { transform: rotateY(180deg); }
-
-/* match pop: scale to 0.9 not 0 — nothing vanishes into a point */
 .card.matched { animation: matchPop 300ms var(--ease-in-out) forwards; }
 @keyframes matchPop {
   0%   { transform: scale(1);    opacity: 1; }
   35%  { transform: scale(1.14); opacity: 1; }
   100% { transform: scale(0.88); opacity: 0; }
 }
-
 .card.shake .card-inner { animation: shake 320ms var(--ease-out); }
 @keyframes shake {
   0%,100% { transform: rotateY(180deg) translateX(0); }
@@ -454,15 +226,137 @@ html, body {
   72%     { transform: rotateY(180deg) translateX(6px); }
 }
 
-/* ══════════════════════════════════════
-   SCREEN 5 — WIN
-══════════════════════════════════════ */
-#screen-win { background: #080810; }
+/* ══ SCREEN 5 — RESULT ══════════════════════ */
+#screen-result {
+  background: var(--dark);
+  align-items: stretch; justify-content: flex-end;
+  overflow: hidden;
+}
+#result-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center; z-index: 0;
+}
+#result-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(8,8,16,0.2) 0%, rgba(8,8,16,0.96) 55%);
+}
+#result-content {
+  position: relative; z-index: 1;
+  padding: 28px 20px;
+  padding-bottom: max(40px, env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+}
 
+/* Stars */
+#result-stars { display: flex; gap: 8px; align-items: center; }
+.star {
+  font-size: 32px; line-height: 1;
+  opacity: 0; transform: scale(0.4) rotate(-20deg);
+  transition: opacity 350ms var(--ease-out), transform 350ms var(--ease-out);
+  filter: grayscale(1);
+}
+.star.lit {
+  opacity: 1; transform: scale(1) rotate(0deg);
+  filter: grayscale(0);
+}
+.star:nth-child(1) { transition-delay: 100ms; }
+.star:nth-child(2) { transition-delay: 220ms; }
+.star:nth-child(3) { transition-delay: 340ms; }
+
+/* Stats row */
+#result-stats {
+  display: flex; gap: 10px; width: 100%;
+}
+.result-stat-shell {
+  flex: 1; border-radius: 18px; padding: 1.5px;
+  background: var(--glass-border);
+}
+.result-stat-core {
+  border-radius: calc(18px - 1.5px);
+  background: var(--glass); box-shadow: inset 0 1px 0 var(--glass-shine);
+  padding: 14px 10px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.result-stat-val {
+  font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.result-stat-label { font-size: 10px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Record badge */
+#result-record {
+  background: linear-gradient(120deg, rgba(255,204,0,0.2), rgba(255,107,53,0.15));
+  border: 0.5px solid rgba(255,204,0,0.4);
+  border-radius: 20px; padding: 6px 16px;
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
+  transition-delay: 500ms;
+}
+#result-record.show { opacity: 1; transform: translateY(0); }
+
+/* Gift button */
+#gift-btn {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,204,0,0.2), rgba(255,107,53,0.15));
+  border: 1.5px solid rgba(255,204,0,0.5);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 0 30px rgba(255,204,0,0.2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  font-size: 40px; line-height: 1;
+  animation: giftPulse 2s ease-in-out infinite;
+  transition: transform 150ms var(--ease-out);
+}
+#gift-btn:active { transform: scale(0.92); }
+@keyframes giftPulse {
+  0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 0 20px rgba(255,204,0,0.2), 0 0 0 0 rgba(255,204,0,0.3); }
+  50%       { box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 0 40px rgba(255,204,0,0.35), 0 0 0 12px rgba(255,204,0,0); }
+}
+#gift-label { font-size: 13px; color: var(--text2); font-weight: 500; margin-top: -8px; }
+
+/* ══ SCREEN 6 — WIN (PRIZE) ═════════════════ */
+#screen-win { background: #080810; }
 #win-video-wrap { flex: 1; overflow: hidden; position: relative; }
 #win-video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Win bar — double bezel style */
+/* Track reveal overlay — slides up from bottom of video */
+#win-track-reveal {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+  background: linear-gradient(to bottom, rgba(8,8,16,0.3), rgba(8,8,16,0.85));
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out);
+  pointer-events: none;
+}
+#win-track-reveal.show { opacity: 1; }
+#reveal-cover-shell {
+  width: 140px; height: 140px; border-radius: 20px; padding: 2px;
+  background: linear-gradient(135deg, rgba(255,204,0,0.6), rgba(255,107,53,0.4));
+  transform: scale(0.7); opacity: 0;
+  transition: transform 500ms var(--ease-out), opacity 500ms var(--ease-out);
+  transition-delay: 150ms;
+}
+#win-track-reveal.show #reveal-cover-shell { transform: scale(1); opacity: 1; }
+#reveal-cover { width: 100%; height: 100%; border-radius: calc(20px - 2px); object-fit: cover; display: block; }
+#reveal-artist {
+  font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 900; color: #fff;
+  text-align: center; text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+  transform: translateY(12px); opacity: 0;
+  transition: transform 400ms var(--ease-out), opacity 400ms var(--ease-out);
+  transition-delay: 350ms;
+}
+#reveal-title {
+  font-size: 13px; color: rgba(255,255,255,0.65);
+  text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  transform: translateY(10px); opacity: 0;
+  transition: transform 400ms var(--ease-out), opacity 400ms var(--ease-out);
+  transition-delay: 450ms;
+}
+#win-track-reveal.show #reveal-artist,
+#win-track-reveal.show #reveal-title { transform: translateY(0); opacity: 1; }
+
+/* Win bar */
 #win-bar-shell {
   flex-shrink: 0;
   background: linear-gradient(180deg, #0d0d1c 0%, var(--dark) 100%);
@@ -470,37 +364,8 @@ html, body {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
   padding: 14px 16px;
   padding-bottom: max(18px, env(safe-area-inset-bottom));
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column; gap: 10px;
 }
-
-#win-track {
-  display: flex; align-items: center; gap: 12px;
-}
-
-/* Double-bezel cover art */
-#win-cover-shell {
-  width: 54px; height: 54px; border-radius: 12px;
-  padding: 1.5px;
-  background: var(--glass-border);
-  flex-shrink: 0;
-}
-#win-cover {
-  width: 100%; height: 100%;
-  border-radius: calc(12px - 1.5px);
-  object-fit: cover; display: block;
-}
-
-#win-track-info { flex: 1; min-width: 0; }
-#win-artist {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 13px; font-weight: 700; color: #fff;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-#win-title {
-  font-size: 12px; color: var(--text2); margin-top: 3px; font-weight: 400;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
 #win-buttons { display: flex; gap: 7px; flex-wrap: wrap; }
 
 .win-btn {
@@ -508,56 +373,31 @@ html, body {
   padding: 7px 14px; border-radius: 20px;
   font-size: 12px; font-weight: 600; font-family: 'Outfit', sans-serif;
   text-decoration: none; border: none; cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent; white-space: nowrap;
   transition: transform 110ms var(--ease-out), opacity 110ms var(--ease-out);
 }
 .win-btn:active:not(:disabled) { transform: scale(0.95); opacity: 0.8; }
-
 @media (hover: hover) and (pointer: fine) {
   .win-btn:hover:not(:disabled) { opacity: 0.88; }
 }
 
+/* New game — conic sweep */
 .btn-new-game {
   background: linear-gradient(120deg, var(--accent) 0%, #FF9500 100%);
   color: #080810; font-weight: 700;
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
-.btn-new-game:disabled {
-  /* dim the text/icon but keep shape visible */
-  color: rgba(8,8,16,0.45);
-  cursor: not-allowed;
-  /* dark base so the sweep is visible */
-  background: rgba(255,204,0,0.18);
-}
-/* The sweep overlay — conic-gradient rotating clockwise */
+.btn-new-game:disabled { color: rgba(8,8,16,0.45); cursor: not-allowed; background: rgba(255,204,0,0.18); }
 .btn-new-game::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: conic-gradient(
-    from -90deg,
-    rgba(255,204,0,0.55) var(--sweep, 0deg),
-    transparent var(--sweep, 0deg)
-  );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 200ms ease;
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: conic-gradient(from -90deg, rgba(255,204,0,0.55) var(--sweep, 0deg), transparent var(--sweep, 0deg));
+  pointer-events: none; opacity: 0; transition: opacity 200ms ease;
 }
-.btn-new-game.sweeping::after {
-  opacity: 1;
-}
-/* When enabled again — flash the full button */
-@keyframes btnUnlock {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.06); }
-  100% { transform: scale(1); }
-}
-.btn-new-game.unlocked {
-  animation: btnUnlock 320ms var(--ease-out) forwards;
-}
+.btn-new-game.sweeping::after { opacity: 1; }
+@keyframes btnUnlock { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
+.btn-new-game.unlocked { animation: btnUnlock 320ms var(--ease-out) forwards; }
+
+.btn-share { background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.18); color: #fff; }
 .btn-yandex  { background: #FFCC00; color: #080810; }
 .btn-vk      { background: #0077FF; color: #fff; }
 .btn-zvuk    { background: #5B3FD6; color: #fff; }
@@ -566,32 +406,16 @@ html, body {
 .btn-apple   { background: #FA243C; color: #fff; }
 
 /* Confetti */
-.confetti {
-  position: absolute; width: 7px; height: 7px;
-  border-radius: 2px; pointer-events: none;
-  animation: fall linear forwards;
-}
-@keyframes fall {
-  0%   { transform: translateY(-16px) rotate(0deg);   opacity: 1; }
-  100% { transform: translateY(100dvh) rotate(700deg); opacity: 0; }
-}
+.confetti { position: absolute; width: 7px; height: 7px; border-radius: 2px; pointer-events: none; animation: fall linear forwards; }
+@keyframes fall { 0% { transform: translateY(-16px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100dvh) rotate(700deg); opacity: 0; } }
 
-/* prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .screen, .game-card-shell, .card-inner, .win-btn, #diff-back, #game-back {
-    transition: opacity 150ms ease !important;
-    transform: none !important;
-    animation: none !important;
-  }
-  .splash-logo {
-    clip-path: none !important;
-    transition: opacity 150ms ease !important;
-    opacity: 0;
-  }
+  .screen, .game-card-shell, .card-inner, .win-btn, .diff-shell { transition: opacity 150ms ease !important; transform: none !important; animation: none !important; }
+  .splash-logo { clip-path: none !important; opacity: 0; transition: opacity 150ms ease !important; }
   .splash-logo.visible { opacity: 1 !important; }
   .card.matched { opacity: 0 !important; }
+  #gift-btn { animation: none !important; }
 }
-
 .hidden { display: none !important; }
 </style>
 </head>
@@ -599,15 +423,9 @@ html, body {
 
 <!-- SCREEN 1: SPLASH -->
 <div id="screen-splash" class="screen">
-  <div class="splash-logo" id="logo-zhara">
-    <img src="assets/zm.png" alt="Zhara Music">
-  </div>
-  <div class="splash-logo" id="logo-lotus">
-    <img src="assets/lm.png" alt="Lotus Music">
-  </div>
-  <div class="splash-logo" id="logo-ovo">
-    <img src="assets/ovo.png" alt="Ovokacho">
-  </div>
+  <div class="splash-logo"><img src="assets/zm.png" alt="Zhara Music"></div>
+  <div class="splash-logo"><img src="assets/lm.png" alt="Lotus Music"></div>
+  <div class="splash-logo"><img src="assets/ovo.png" alt="Ovokacho"></div>
 </div>
 
 <!-- SCREEN 2: GAME SELECT -->
@@ -617,7 +435,6 @@ html, body {
     <div id="select-sub">Выбери игру</div>
   </div>
   <div id="games-grid">
-
     <div class="game-card-shell active-game" onclick="App.goToDifficulty()">
       <div class="game-card-inner">
         <div class="game-card-badge badge-play">Играть</div>
@@ -625,47 +442,11 @@ html, body {
         <div class="game-card-name">Найди пару</div>
       </div>
     </div>
-
-    <div class="game-card-shell">
-      <div class="game-card-inner">
-        <div class="game-card-badge badge-soon">Скоро</div>
-        <div class="game-card-icon">💎</div>
-        <div class="game-card-name">Кристаллы</div>
-      </div>
-    </div>
-
-    <div class="game-card-shell">
-      <div class="game-card-inner">
-        <div class="game-card-badge badge-soon">Скоро</div>
-        <div class="game-card-icon">🧩</div>
-        <div class="game-card-name">Паззлы</div>
-      </div>
-    </div>
-
-    <div class="game-card-shell">
-      <div class="game-card-inner">
-        <div class="game-card-badge badge-soon">Скоро</div>
-        <div class="game-card-icon">🀄</div>
-        <div class="game-card-name">Маджонг</div>
-      </div>
-    </div>
-
-    <div class="game-card-shell">
-      <div class="game-card-inner">
-        <div class="game-card-badge badge-soon">Скоро</div>
-        <div class="game-card-icon">🔤</div>
-        <div class="game-card-name">Слова</div>
-      </div>
-    </div>
-
-    <div class="game-card-shell">
-      <div class="game-card-inner">
-        <div class="game-card-badge badge-soon">Скоро</div>
-        <div class="game-card-icon">🟦</div>
-        <div class="game-card-name">Тетрис</div>
-      </div>
-    </div>
-
+    <div class="game-card-shell"><div class="game-card-inner"><div class="game-card-badge badge-soon">Скоро</div><div class="game-card-icon">💎</div><div class="game-card-name">Кристаллы</div></div></div>
+    <div class="game-card-shell"><div class="game-card-inner"><div class="game-card-badge badge-soon">Скоро</div><div class="game-card-icon">🧩</div><div class="game-card-name">Паззлы</div></div></div>
+    <div class="game-card-shell"><div class="game-card-inner"><div class="game-card-badge badge-soon">Скоро</div><div class="game-card-icon">🀄</div><div class="game-card-name">Маджонг</div></div></div>
+    <div class="game-card-shell"><div class="game-card-inner"><div class="game-card-badge badge-soon">Скоро</div><div class="game-card-icon">🔤</div><div class="game-card-name">Слова</div></div></div>
+    <div class="game-card-shell"><div class="game-card-inner"><div class="game-card-badge badge-soon">Скоро</div><div class="game-card-icon">🟦</div><div class="game-card-name">Тетрис</div></div></div>
   </div>
 </div>
 
@@ -677,30 +458,10 @@ html, body {
     <div id="diff-game-name">Найди пару</div>
     <div id="diff-prompt">Сколько карточек на поле?</div>
     <div id="diff-grid">
-      <div class="diff-shell" onclick="App.startGame(4)">
-        <div class="diff-core">
-          <div class="diff-num">4</div>
-          <div class="diff-label">Малыш</div>
-        </div>
-      </div>
-      <div class="diff-shell" onclick="App.startGame(16)">
-        <div class="diff-core">
-          <div class="diff-num">16</div>
-          <div class="diff-label">Легко</div>
-        </div>
-      </div>
-      <div class="diff-shell" onclick="App.startGame(36)">
-        <div class="diff-core">
-          <div class="diff-num">36</div>
-          <div class="diff-label">Средне</div>
-        </div>
-      </div>
-      <div class="diff-shell" onclick="App.startGame(64)">
-        <div class="diff-core">
-          <div class="diff-num">64</div>
-          <div class="diff-label">Хардкор</div>
-        </div>
-      </div>
+      <div class="diff-shell" onclick="App.startGame(4)"><div class="diff-core"><div class="diff-num">4</div><div class="diff-label">Малыш</div></div></div>
+      <div class="diff-shell" onclick="App.startGame(16)"><div class="diff-core"><div class="diff-num">16</div><div class="diff-label">Легко</div></div></div>
+      <div class="diff-shell" onclick="App.startGame(36)"><div class="diff-core"><div class="diff-num">36</div><div class="diff-label">Средне</div></div></div>
+      <div class="diff-shell" onclick="App.startGame(64)"><div class="diff-core"><div class="diff-num">64</div><div class="diff-label">Хардкор</div></div></div>
     </div>
   </div>
 </div>
@@ -711,61 +472,86 @@ html, body {
   <div id="game-header">
     <button id="game-back" onclick="App.goTo('select')">←</button>
     <div id="game-stats">
+      <div id="timer-display">0:00</div>
       <div class="stat">↺ <span id="moves">0</span></div>
       <div class="stat">✓ <span id="found">0</span>/<span id="total">8</span></div>
     </div>
   </div>
-  <div id="grid-wrap">
-    <div id="grid"></div>
+  <div id="grid-wrap"><div id="grid"></div></div>
+</div>
+
+<!-- SCREEN 5: RESULT -->
+<div id="screen-result" class="screen">
+  <div id="result-bg"></div>
+  <div id="result-content">
+    <div id="result-stars">
+      <div class="star">⭐</div>
+      <div class="star">⭐</div>
+      <div class="star">⭐</div>
+    </div>
+    <div id="result-stats">
+      <div class="result-stat-shell">
+        <div class="result-stat-core">
+          <div class="result-stat-val" id="res-moves">—</div>
+          <div class="result-stat-label">Ходов</div>
+        </div>
+      </div>
+      <div class="result-stat-shell">
+        <div class="result-stat-core">
+          <div class="result-stat-val" id="res-time">—</div>
+          <div class="result-stat-label">Время</div>
+        </div>
+      </div>
+      <div class="result-stat-shell">
+        <div class="result-stat-core">
+          <div class="result-stat-val" id="res-best">—</div>
+          <div class="result-stat-label">Рекорд</div>
+        </div>
+      </div>
+    </div>
+    <div id="result-record">🏆 Новый рекорд!</div>
+    <div id="gift-btn" onclick="App.openPrize()">🎁</div>
+    <div id="gift-label">Забрать приз</div>
   </div>
 </div>
 
-<!-- SCREEN 5: WIN -->
+<!-- SCREEN 6: WIN / PRIZE -->
 <div id="screen-win" class="screen">
   <div id="win-video-wrap">
-    <video id="win-video" autoplay playsinline loop muted>
+    <video id="win-video" playsinline loop muted>
       <source id="win-video-src" src="" type="video/mp4">
     </video>
+    <!-- Track reveal overlay shown before video fades in -->
+    <div id="win-track-reveal">
+      <div id="reveal-cover-shell">
+        <img id="reveal-cover" src="" alt="">
+      </div>
+      <div id="reveal-artist"></div>
+      <div id="reveal-title"></div>
+    </div>
   </div>
   <div id="win-bar-shell">
-    <div id="win-track">
-      <div id="win-cover-shell">
-        <img id="win-cover" src="" alt="обложка">
-      </div>
-      <div id="win-track-info">
-        <div id="win-artist"></div>
-        <div id="win-title"></div>
-      </div>
-    </div>
     <div id="win-buttons">
       <button class="win-btn btn-new-game" id="btn-new-game" disabled onclick="App.newGame()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Новая игра
       </button>
-      <a id="btn-yandex" class="win-btn btn-yandex" target="_blank">
+      <button class="win-btn btn-share" id="btn-share" onclick="App.share()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Поделиться
+      </button>
+      <a id="btn-yandex"  class="win-btn btn-yandex"  target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.572 2C9.428 2 7 4.258 7 8.192c0 2.84 1.388 4.755 3.87 5.734L7.1 22h3.045l3.573-7.638h.024V22H16.5V2h-2.928zm0 9.98h-.78V4.34h.78c1.868 0 2.844 1.15 2.844 3.748 0 2.61-.976 3.892-2.844 3.892z"/></svg>
-        Я.Музыка
+        Яндекс
       </a>
       <a id="btn-vk" class="win-btn btn-vk" target="_blank">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.898 7.67c.13-.43 0-.75-.614-.75h-2.032c-.517 0-.755.273-.885.574 0 0-1.033 2.517-2.496 4.15-.473.474-.688.624-.946.624-.13 0-.317-.15-.317-.58V7.67c0-.516-.15-.75-.58-.75H10.3c-.322 0-.516.24-.516.467 0 .49.731.603.806 1.983v2.994c0 .655-.118.773-.376.773-.688 0-2.363-2.529-3.356-5.422C6.664 7.13 6.47 6.92 5.95 6.92H3.917c-.58 0-.696.273-.696.574 0 .537.688 3.196 3.205 6.715 1.678 2.408 4.04 3.714 6.19 3.714 1.29 0 1.45-.29 1.45-.79v-1.827c0-.58.122-.695.53-.695.3 0 .817.15 2.022 1.312 1.377 1.377 1.604 1.994 2.378 1.994h2.033c.58 0 .87-.29.703-.861-.183-.57-.84-1.396-1.72-2.376-.473-.559-1.183-1.162-1.398-1.462-.3-.387-.215-.559 0-.904 0 0 2.473-3.476 2.731-4.658z"/></svg>
-        ВК Музыка
+        ВК
       </a>
-      <a id="btn-zvuk" class="win-btn btn-zvuk" target="_blank">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 14.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9zm0-7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
-        Звук
-      </a>
-      <a id="btn-kion" class="win-btn btn-kion" target="_blank">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        КИОН
-      </a>
-      <a id="btn-spotify" class="win-btn btn-spotify" target="_blank">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 0 1-.277-1.215c3.809-.87 7.076-.496 9.712 1.115a.623.623 0 0 1 .207.857zm1.223-2.722a.78.78 0 0 1-1.072.257C14.1 12.14 10.539 11.67 7.2 12.656a.78.78 0 0 1-.434-1.495c3.787-1.1 8.003-.567 10.786 1.069a.78.78 0 0 1 .257 1.072zm.105-2.835C15.12 9.174 10.39 9.013 7.2 9.97a.936.936 0 1 1-.543-1.79c3.655-1.11 9.038-.896 12.602 1.232a.935.935 0 0 1-.345 1.455z"/></svg>
-        Spotify
-      </a>
-      <a id="btn-apple" class="win-btn btn-apple" target="_blank">
-        <svg width="13" height="14" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.8 135.4-317.9 269-317.9 100.6 0 164.4 55.8 220.3 55.8 53.3 0 127.3-58.8 238.3-58.8zm-111 -192.9c50.7-60.2 86.4-144.1 86.4-228 0-11.1-.6-22.3-2.6-31.4-82.6 3.2-180.9 55.2-239.6 125.7-45.5 52.7-88.9 136.6-88.9 221.9 0 12.3 2 24.6 3.2 28.5 5.2.6 13.6 1.9 22 1.9 73.9 0 165.4-49.4 219.5-118.6z"/></svg>
-        Apple Music
-      </a>
+      <a id="btn-zvuk"    class="win-btn btn-zvuk hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 14.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9zm0-7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>Звук</a>
+      <a id="btn-kion"    class="win-btn btn-kion hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>КИОН</a>
+      <a id="btn-spotify" class="win-btn btn-spotify hidden" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 0 1-.277-1.215c3.809-.87 7.076-.496 9.712 1.115a.623.623 0 0 1 .207.857zm1.223-2.722a.78.78 0 0 1-1.072.257C14.1 12.14 10.539 11.67 7.2 12.656a.78.78 0 0 1-.434-1.495c3.787-1.1 8.003-.567 10.786 1.069a.78.78 0 0 1 .257 1.072zm.105-2.835C15.12 9.174 10.39 9.013 7.2 9.97a.936.936 0 1 1-.543-1.79c3.655-1.11 9.038-.896 12.602 1.232a.935.935 0 0 1-.345 1.455z"/></svg>Spotify</a>
+      <a id="btn-apple"   class="win-btn btn-apple hidden"   target="_blank"><svg width="13" height="14" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.8 135.4-317.9 269-317.9 100.6 0 164.4 55.8 220.3 55.8 53.3 0 127.3-58.8 238.3-58.8zm-111-192.9c50.7-60.2 86.4-144.1 86.4-228 0-11.1-.6-22.3-2.6-31.4-82.6 3.2-180.9 55.2-239.6 125.7-45.5 52.7-88.9 136.6-88.9 221.9 0 12.3 2 24.6 3.2 28.5 5.2.6 13.6 1.9 22 1.9 73.9 0 165.4-49.4 219.5-118.6z"/></svg>Apple</a>
     </div>
   </div>
 </div>
@@ -773,15 +559,122 @@ html, body {
 <script src="releases.js"></script>
 <script>
 // ═══════════════════════════════════════
+// AUDIO ENGINE — Web Audio API
+// ═══════════════════════════════════════
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let _actx = null;
+
+function getACtx() {
+  if (!_actx) _actx = new AudioCtx();
+  return _actx;
+}
+
+function playTone(freq, type, duration, vol = 0.18, fadeStart = 0.7) {
+  try {
+    const ctx = getACtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+
+const SFX = {
+  flip()  { playTone(420, 'sine', 0.08, 0.12); },
+  match() {
+    playTone(660, 'sine', 0.18, 0.15);
+    setTimeout(() => playTone(880, 'sine', 0.22, 0.15), 80);
+    setTimeout(() => playTone(1100,'sine', 0.26, 0.12), 180);
+  },
+  error() { playTone(200, 'sawtooth', 0.12, 0.08); },
+  win()   {
+    [523,659,784,1047].forEach((f,i) => setTimeout(() => playTone(f,'sine',0.35,0.15), i*90));
+  },
+};
+
+// ═══════════════════════════════════════
+// RECORDS — localStorage
+// ═══════════════════════════════════════
+const Records = {
+  key(diff) { return `mirazh_record_${diff}`; },
+  get(diff) {
+    try { return JSON.parse(localStorage.getItem(Records.key(diff))) || null; }
+    catch { return null; }
+  },
+  set(diff, moves, time) {
+    try { localStorage.setItem(Records.key(diff), JSON.stringify({ moves, time })); }
+    catch {}
+  },
+  // Returns true if this is a new record
+  update(diff, moves, time) {
+    const prev = Records.get(diff);
+    if (!prev || moves < prev.moves || (moves === prev.moves && time < prev.time)) {
+      Records.set(diff, moves, time);
+      return true;
+    }
+    return false;
+  },
+  bestMoves(diff) { const r = Records.get(diff); return r ? r.moves : null; },
+};
+
+// ═══════════════════════════════════════
+// STARS — based on moves vs pairs
+// ═══════════════════════════════════════
+function calcStars(moves, pairs) {
+  const ratio = moves / pairs;
+  if (ratio <= 1.4) return 3;
+  if (ratio <= 2.2) return 2;
+  return 1;
+}
+
+// ═══════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════
+const Timer = {
+  _start: 0, _elapsed: 0, _raf: null, _running: false,
+
+  start() {
+    this._start = performance.now() - this._elapsed;
+    this._running = true;
+    this._tick();
+  },
+  stop() {
+    this._running = false;
+    if (this._raf) { cancelAnimationFrame(this._raf); this._raf = null; }
+    return Math.floor(this._elapsed / 1000);
+  },
+  reset() {
+    this.stop(); this._elapsed = 0;
+    document.getElementById('timer-display').textContent = '0:00';
+  },
+  _tick() {
+    if (!this._running) return;
+    this._elapsed = performance.now() - this._start;
+    const s = Math.floor(this._elapsed / 1000);
+    const m = Math.floor(s / 60);
+    const ss = String(s % 60).padStart(2, '0');
+    document.getElementById('timer-display').textContent = `${m}:${ss}`;
+    this._raf = requestAnimationFrame(() => this._tick());
+  },
+  format(totalSec) {
+    const m = Math.floor(totalSec / 60);
+    const s = String(totalSec % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  },
+};
+
+// ═══════════════════════════════════════
 // CONSTANTS
 // ═══════════════════════════════════════
 const EMOJIS = [
   '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯',
   '🦁','🐮','🐷','🐸','🐵','🐔','🐧','🐦','🦆','🦅',
   '🦋','🐛','🐌','🐞','🐜','🦟','🦗','🐝','🐢','🦎',
-  '🦕','🦖'
+  '🦕','🦖',
 ];
-
 const PLATFORM_CONFIG = {
   yandex:  { el: 'btn-yandex'   },
   vk:      { el: 'btn-vk'      },
@@ -790,31 +683,21 @@ const PLATFORM_CONFIG = {
   spotify: { el: 'btn-spotify' },
   apple:   { el: 'btn-apple'   },
 };
-
-const GRID_CONFIGS = {
-  4:  [2, 2],
-  16: [4, 4],
-  36: [6, 6],
-  64: [8, 8],
-};
+const GRID_CONFIGS = { 4:[2,2], 16:[4,4], 36:[6,6], 64:[8,8] };
 
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
 const state = {
-  screen:       'splash',
-  releaseQueue: [],
-  currentRelease: null,
-  difficulty:   16,
-  cards:        [],
-  flipped:      [],
-  matched:      0,
-  moves:        0,
-  lock:         false,
+  screen: 'splash',
+  releaseQueue: [], currentRelease: null,
+  difficulty: 16,
+  cards: [], flipped: [], matched: 0, moves: 0, lock: false,
+  finalTime: 0, finalMoves: 0,
 };
 
 // ═══════════════════════════════════════
-// RELEASE QUEUE — без повторов до исчерпания
+// RELEASE QUEUE
 // ═══════════════════════════════════════
 function buildQueue() {
   const arr = [...RELEASES];
@@ -824,27 +707,19 @@ function buildQueue() {
   }
   return arr;
 }
-
 function nextRelease() {
-  if (state.releaseQueue.length === 0) {
-    state.releaseQueue = buildQueue();
-  }
+  if (state.releaseQueue.length === 0) state.releaseQueue = buildQueue();
   return state.releaseQueue.shift();
 }
 
 // ═══════════════════════════════════════
-// PRELOAD — во время игры
+// PRELOAD
 // ═══════════════════════════════════════
 let _preloadedVideo = null;
-
 function preloadRelease(release) {
-  const img = new Image();
-  img.src = release.cover;
-
+  new Image().src = release.cover;
   const vid = document.createElement('video');
-  vid.preload = 'auto';
-  vid.src = release.video;
-  vid.load();
+  vid.preload = 'auto'; vid.src = release.video; vid.load();
   _preloadedVideo = vid;
 }
 
@@ -855,17 +730,14 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
   state.screen = id;
-
   if (id === 'select') {
     requestAnimationFrame(() => {
       document.querySelectorAll('.game-card-shell').forEach(c => c.classList.add('revealed'));
     });
-    // Preload next release while user browses the game select screen
-    const next = nextRelease();
-    state.currentRelease = next;
-    preloadRelease(next);
-    document.getElementById('diff-bg').style.backgroundImage =
-      `url('${next.cover}')`;
+    state.currentRelease = nextRelease();
+    preloadRelease(state.currentRelease);
+    document.getElementById('diff-bg').style.backgroundImage = `url('${state.currentRelease.cover}')`;
+    document.getElementById('result-bg').style.backgroundImage = `url('${state.currentRelease.cover}')`;
   }
 }
 
@@ -874,9 +746,7 @@ function showScreen(id) {
 // ═══════════════════════════════════════
 function runSplash() {
   showScreen('splash');
-  setTimeout(() => {
-    document.querySelectorAll('.splash-logo').forEach(el => el.classList.add('visible'));
-  }, 180);
+  setTimeout(() => document.querySelectorAll('.splash-logo').forEach(el => el.classList.add('visible')), 180);
   setTimeout(() => App.goTo('select'), 2800);
 }
 
@@ -884,14 +754,9 @@ function runSplash() {
 // APP CONTROLLER
 // ═══════════════════════════════════════
 const App = {
-  goTo(screen) {
-    showScreen(screen);
-  },
+  goTo(screen) { showScreen(screen); },
 
-  goToDifficulty() {
-    // Release already preloaded during select screen — just navigate
-    showScreen('difficulty');
-  },
+  goToDifficulty() { showScreen('difficulty'); },
 
   startGame(n) {
     state.difficulty = n;
@@ -900,18 +765,35 @@ const App = {
   },
 
   newGame() {
-    // Cancel sweep animation
-    if (_newGameTimer) { cancelAnimationFrame(_newGameTimer); _newGameTimer = null; }
+    if (_newGameRaf) { cancelAnimationFrame(_newGameRaf); _newGameRaf = null; }
     const btnNew = document.getElementById('btn-new-game');
     btnNew.classList.remove('sweeping', 'unlocked');
     btnNew.style.setProperty('--sweep', '0deg');
-    // Stop reel before going back to game
     const vid = document.getElementById('win-video');
-    vid.pause();
-    vid.currentTime = 0;
-    // Same release, same difficulty
+    vid.pause(); vid.currentTime = 0;
     initGame();
     showScreen('game');
+  },
+
+  openPrize() {
+    // Unlock audio context on user gesture
+    try { getACtx().resume(); } catch(e) {}
+    SFX.win();
+    showScreen('win');
+    setupWinScreen();
+  },
+
+  share() {
+    const release = state.currentRelease;
+    const text = `Я нашёл трек «${release.artist} — ${release.title}» в игре Mirazh 🎴`;
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ text, url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(`${text}\n${url}`)
+        .then(() => alert('Скопировано в буфер обмена!'))
+        .catch(() => {});
+    }
   },
 };
 
@@ -929,73 +811,47 @@ function shuffle(arr) {
 
 function calcCardSize(cols, rows, gap) {
   const wrap = document.getElementById('grid-wrap');
-  const W = wrap.clientWidth  - 20;
-  const H = wrap.clientHeight - 12;
-  const byW = (W - gap * (cols - 1)) / cols;
-  const byH = (H - gap * (rows - 1)) / rows;
-  return Math.floor(Math.min(byW, byH));
+  const W = wrap.clientWidth - 20, H = wrap.clientHeight - 12;
+  return Math.floor(Math.min((W - gap*(cols-1))/cols, (H - gap*(rows-1))/rows));
 }
 
 function initGame() {
   const n = state.difficulty;
-  state.flipped = [];
-  state.matched = 0;
-  state.moves   = 0;
-  state.lock    = false;
-
+  state.flipped = []; state.matched = 0; state.moves = 0; state.lock = false;
   const pairs = n / 2;
-  state.cards = shuffle([...EMOJIS.slice(0, pairs), ...EMOJIS.slice(0, pairs)]);
-
+  state.cards = shuffle([...EMOJIS.slice(0,pairs), ...EMOJIS.slice(0,pairs)]);
   document.getElementById('moves').textContent = '0';
-  document.getElementById('found').textContent = '0';
-  document.getElementById('total').textContent = pairs;
-
-  document.getElementById('game-bg').style.backgroundImage =
-    `url('${state.currentRelease.cover}')`;
-
+  document.getElementById('found').textContent  = '0';
+  document.getElementById('total').textContent  = pairs;
+  document.getElementById('game-bg').style.backgroundImage = `url('${state.currentRelease.cover}')`;
+  Timer.reset(); Timer.start();
   renderGrid();
 }
 
 function renderGrid() {
   const grid = document.getElementById('grid');
-  const gap  = 6;
-  const [cols, rows] = GRID_CONFIGS[state.difficulty];
-  const size  = calcCardSize(cols, rows, gap);
+  const gap = 6, [cols, rows] = GRID_CONFIGS[state.difficulty];
+  const size = calcCardSize(cols, rows, gap);
   const emoji = Math.max(10, Math.floor(size * 0.45));
-
-  grid.style.cssText = `
-    display:grid;
-    grid-template-columns:repeat(${cols},${size}px);
-    grid-template-rows:repeat(${rows},${size}px);
-    gap:${gap}px;
-  `;
+  grid.style.cssText = `display:grid;grid-template-columns:repeat(${cols},${size}px);grid-template-rows:repeat(${rows},${size}px);gap:${gap}px;`;
   grid.innerHTML = '';
-
   state.cards.forEach((em, i) => {
     const card = document.createElement('div');
-    card.className = 'card';
-    card.dataset.idx = i;
-    card.style.width  = size + 'px';
-    card.style.height = size + 'px';
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="card-back" style="font-size:${Math.floor(emoji*0.5)}px">?</div>
-        <div class="card-front" style="font-size:${emoji}px">${em}</div>
-      </div>`;
+    card.className = 'card'; card.dataset.idx = i;
+    card.style.width = card.style.height = size + 'px';
+    card.innerHTML = `<div class="card-inner"><div class="card-back" style="font-size:${Math.floor(emoji*0.5)}px">?</div><div class="card-front" style="font-size:${emoji}px">${em}</div></div>`;
     card.addEventListener('click', () => onCardClick(i, card));
     grid.appendChild(card);
   });
 }
 
-function getCardEl(i) {
-  return document.querySelector(`.card[data-idx="${i}"]`);
-}
+function getCardEl(i) { return document.querySelector(`.card[data-idx="${i}"]`); }
 
 function onCardClick(i, el) {
-  if (state.lock) return;
-  if (el.classList.contains('flipped')) return;
-  if (el.classList.contains('matched')) return;
-
+  if (state.lock || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  // Unlock AudioContext on first tap
+  try { getACtx().resume(); } catch(e) {}
+  SFX.flip();
   el.classList.add('flipped');
   state.flipped.push(i);
 
@@ -1003,120 +859,148 @@ function onCardClick(i, el) {
     state.lock = true;
     state.moves++;
     document.getElementById('moves').textContent = state.moves;
-
     const [a, b] = state.flipped;
 
     if (state.cards[a] === state.cards[b]) {
       state.matched++;
       document.getElementById('found').textContent = state.matched;
-
+      SFX.match();
       setTimeout(() => {
         [getCardEl(a), getCardEl(b)].forEach(c => {
           c.classList.add('matched');
           setTimeout(() => { c.style.visibility = 'hidden'; }, 300);
         });
-      }, 160);
-
-      state.flipped = [];
-      state.lock    = false;
-
-      if (state.matched === state.difficulty / 2) {
-        setTimeout(showWin, 700);
-      }
+      }, 150);
+      state.flipped = []; state.lock = false;
+      if (state.matched === state.difficulty / 2) setTimeout(onGameWon, 700);
     } else {
+      SFX.error();
       setTimeout(() => {
         [getCardEl(a), getCardEl(b)].forEach(c => {
-          c.classList.remove('flipped');
-          c.classList.add('shake');
+          c.classList.remove('flipped'); c.classList.add('shake');
           setTimeout(() => c.classList.remove('shake'), 320);
         });
-        state.flipped = [];
-        state.lock    = false;
+        state.flipped = []; state.lock = false;
       }, 900);
     }
   }
 }
 
 // ═══════════════════════════════════════
-// WIN SCREEN
+// ON GAME WON — show result screen
 // ═══════════════════════════════════════
-let _newGameTimer = null; // rAF id for sweep
+function onGameWon() {
+  state.finalTime  = Timer.stop();
+  state.finalMoves = state.moves;
+  const diff  = state.difficulty;
+  const pairs = diff / 2;
+  const stars = calcStars(state.finalMoves, pairs);
+  const isRecord = Records.update(diff, state.finalMoves, state.finalTime);
+  const bestMoves = Records.bestMoves(diff);
 
-function showWin() {
-  const release = state.currentRelease;
-
-  document.getElementById('win-cover').src             = release.cover;
-  document.getElementById('win-artist').textContent    = release.artist;
-  document.getElementById('win-title').textContent     = release.title;
-
-  Object.entries(PLATFORM_CONFIG).forEach(([key, cfg]) => {
-    const el  = document.getElementById(cfg.el);
-    const url = release.links[key];
-    if (url) { el.href = url; el.classList.remove('hidden'); }
-    else     { el.classList.add('hidden'); }
+  // Stars animation
+  const starEls = document.querySelectorAll('.star');
+  starEls.forEach((el, idx) => {
+    el.classList.remove('lit');
+    if (idx < stars) setTimeout(() => el.classList.add('lit'), 100 + idx * 120);
   });
 
+  // Stats
+  document.getElementById('res-moves').textContent = state.finalMoves;
+  document.getElementById('res-time').textContent  = Timer.format(state.finalTime);
+  document.getElementById('res-best').textContent  = bestMoves !== null ? bestMoves : '—';
+
+  // Record badge
+  const recEl = document.getElementById('result-record');
+  if (isRecord) setTimeout(() => recEl.classList.add('show'), 600);
+  else recEl.classList.remove('show');
+
+  showScreen('result');
+  spawnConfetti();
+}
+
+// ═══════════════════════════════════════
+// WIN SCREEN SETUP (after gift tap)
+// ═══════════════════════════════════════
+let _newGameRaf = null;
+
+function setupWinScreen() {
+  const release = state.currentRelease;
+
+  // Platform buttons
+  Object.entries(PLATFORM_CONFIG).forEach(([key, cfg]) => {
+    const el = document.getElementById(cfg.el);
+    const url = release.links[key];
+    if (url) { el.href = url; el.classList.remove('hidden'); }
+    else { el.classList.add('hidden'); }
+  });
+
+  // Cover + names in reveal overlay
+  document.getElementById('reveal-cover').src   = release.cover;
+  document.getElementById('reveal-artist').textContent = release.artist;
+  document.getElementById('reveal-title').textContent  = release.title;
+
+  // Show reveal overlay first
+  const reveal = document.getElementById('win-track-reveal');
+  reveal.classList.remove('show');
+  requestAnimationFrame(() => requestAnimationFrame(() => reveal.classList.add('show')));
+
+  // Start video after short delay — fade in naturally
   const vid = document.getElementById('win-video');
   const src = document.getElementById('win-video-src');
   src.src   = release.video;
-  vid.muted = false;
+  vid.muted = false; vid.currentTime = 0;
   vid.load();
-  vid.play().catch(() => { vid.muted = true; vid.play(); });
+  setTimeout(() => {
+    vid.play().catch(() => { vid.muted = true; vid.play(); });
+    // Fade out the reveal overlay once video is playing
+    setTimeout(() => reveal.classList.remove('show'), 1200);
+  }, 800);
 
+  // New game sweep — 5 sec
   const btnNew = document.getElementById('btn-new-game');
   btnNew.disabled = true;
   btnNew.classList.remove('unlocked');
   btnNew.classList.add('sweeping');
   btnNew.style.setProperty('--sweep', '0deg');
-
-  // Cancel any previous animation
-  if (_newGameTimer) { cancelAnimationFrame(_newGameTimer); _newGameTimer = null; }
-  if (window._sweepInterval) { clearInterval(window._sweepInterval); }
-
+  if (_newGameRaf) cancelAnimationFrame(_newGameRaf);
+  const t0 = performance.now();
   const DURATION = 5000;
-  const startTime = performance.now();
-
-  function animateSweep(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / DURATION, 1);
-    const deg = Math.round(progress * 360);
-    btnNew.style.setProperty('--sweep', deg + 'deg');
-
-    if (progress < 1) {
-      _newGameTimer = requestAnimationFrame(animateSweep);
+  function sweepTick(now) {
+    const p = Math.min((now - t0) / DURATION, 1);
+    btnNew.style.setProperty('--sweep', Math.round(p * 360) + 'deg');
+    if (p < 1) {
+      _newGameRaf = requestAnimationFrame(sweepTick);
     } else {
-      // Sweep complete — unlock
       btnNew.disabled = false;
       btnNew.classList.remove('sweeping');
       btnNew.classList.add('unlocked');
       btnNew.style.setProperty('--sweep', '0deg');
-      _newGameTimer = null;
+      _newGameRaf = null;
     }
   }
-  _newGameTimer = requestAnimationFrame(animateSweep);
-
-  showScreen('win');
-  spawnConfetti();
+  _newGameRaf = requestAnimationFrame(sweepTick);
 }
 
+// ═══════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════
 function spawnConfetti() {
   const colors = ['#FFCC00','#FF6B35','#6BFFB8','#6BB5FF','#FF6BFF'];
-  const ov = document.getElementById('screen-win');
+  const ov = document.getElementById('screen-result');
   for (let i = 0; i < 38; i++) {
     const el = document.createElement('div');
     el.className = 'confetti';
-    el.style.cssText = `left:${Math.random()*100}%;top:0;background:${colors[i%colors.length]};animation-duration:${1.4+Math.random()*2}s;animation-delay:${Math.random()*0.7}s`;
+    el.style.cssText = `left:${Math.random()*100}%;top:0;background:${colors[i%colors.length]};animation-duration:${1.4+Math.random()*2}s;animation-delay:${Math.random()*0.6}s`;
     ov.appendChild(el);
-    setTimeout(() => el.remove(), 3400);
+    setTimeout(() => el.remove(), 3200);
   }
 }
 
 // ═══════════════════════════════════════
 // RESIZE
 // ═══════════════════════════════════════
-window.addEventListener('resize', () => {
-  if (state.screen === 'game') renderGrid();
-});
+window.addEventListener('resize', () => { if (state.screen === 'game') renderGrid(); });
 
 // ═══════════════════════════════════════
 // BOOT
