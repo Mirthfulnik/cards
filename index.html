@@ -404,12 +404,12 @@ html, body {
 <!-- SCREEN 0: NICKNAME -->
 <div id="screen-nickname" class="screen">
   <div id="nick-logo">Mirazh</div>
-  <div id="nick-sub">Игровой маркетплейс<br>от Zhara, Lotus & Ovokacho</div>
-  <div id="nick-label">Твой никнейм</div>
+  <div id="nick-sub"></div>
+  <div id="nick-label">Ваше имя в игре</div>
   <div id="nick-input-wrap">
-    <input id="nick-input" type="text" maxlength="16" placeholder="Введи никнейм..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <input id="nick-input" type="text" maxlength="16" placeholder="Придумайте имя..." autocomplete="off" autocorrect="off" spellcheck="false">
   </div>
-  <button id="nick-confirm" disabled onclick="App.saveNickname()">Начать играть →</button>
+  <button id="nick-confirm" disabled onclick="App.saveNickname()">Начать играть</button>
 </div>
 
 <!-- SCREEN 1: SPLASH -->
@@ -424,7 +424,7 @@ html, body {
   <div id="select-header">
     <div id="select-title-wrap">
       <div id="select-title">Mirazh</div>
-      <div id="select-sub">Выбери игру</div>
+      <div id="select-sub">Выберите игру</div>
     </div>
     <div id="profile-pill" onclick="App.goTo('profile')">
       <span id="profile-trophy">🏆</span>
