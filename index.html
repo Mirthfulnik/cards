@@ -87,9 +87,9 @@ html, body {
   text-transform: uppercase; color: #aaa; font-family: 'Outfit', sans-serif;
 }
 .splash-logo { clip-path: inset(0 0 100% 0); transition: clip-path 520ms var(--ease-drawer); }
-.splash-logo:nth-child(1) { transition-delay: 0ms; }
-.splash-logo:nth-child(2) { transition-delay: 180ms; }
-.splash-logo:nth-child(3) { transition-delay: 360ms; }
+.splash-logo:nth-child(2) { transition-delay: 0ms; }
+.splash-logo:nth-child(3) { transition-delay: 180ms; }
+.splash-logo:nth-child(4) { transition-delay: 360ms; }
 .splash-logo.visible { clip-path: inset(0 0 0% 0); }
 .splash-logo img { height: 44px; width: auto; display: block; object-fit: contain; }
 
@@ -258,7 +258,7 @@ html, body {
 #gift-label { font-size: 13px; color: var(--text2); font-weight: 500; margin-top: -8px; }
 
 /* ══ SCREEN 6 — WIN (PRIZE) ════════════ */
-#screen-win { background: #080810; }
+#screen-win { background: #080810; overflow: hidden; }
 #win-video-wrap { flex: 1; overflow: hidden; position: relative; min-height: 0; }
 #win-video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -289,14 +289,12 @@ html, body {
 #win-track-reveal.show #reveal-artist,
 #win-track-reveal.show #reveal-title { transform: translateY(0); opacity: 1; }
 
-/* Mini track bar — absolute at bottom of video, slides from right to left */
+/* Mini track bar — flex item above buttons, slides in from right */
 #win-mini-bar {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  z-index: 6;
+  flex-shrink: 0;
   display: flex; align-items: center; gap: 12px;
   padding: 12px 16px;
-  background: linear-gradient(to top, rgba(8,8,16,0.97) 0%, rgba(8,8,16,0.85) 100%);
+  background: rgba(10,10,20,0.98);
   border-top: 0.5px solid rgba(255,255,255,0.10);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
   transform: translateX(110%);
@@ -334,7 +332,8 @@ html, body {
 @keyframes btnUnlock { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 .btn-new-game.unlocked { animation: btnUnlock 320ms var(--ease-out) forwards; }
 
-.btn-share   { background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.18); color: #fff; }
+.btn-share    { background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.18); color: #fff; }
+.btn-back-win { background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.18); color: #fff; }
 .btn-yandex  { background: #FFCC00; color: #080810; }
 .btn-vk      { background: #0077FF; color: #fff; }
 .btn-zvuk    { background: #5B3FD6; color: #fff; }
@@ -361,6 +360,9 @@ html, body {
   font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 900;
   background: linear-gradient(120deg, var(--accent), var(--accent2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+#profile-level-display {
+  font-size: 11px; color: var(--text2); margin-top: 2px; font-weight: 500;
 }
 
 #profile-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 16px 32px; }
@@ -531,6 +533,9 @@ html, body {
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Новая игра
       </button>
+      <button class="win-btn btn-back-win hidden" id="btn-back-from-win" onclick="App.backFromWin()">
+        ← Назад
+      </button>
       <button class="win-btn btn-share" onclick="App.share()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         Поделиться
@@ -549,7 +554,10 @@ html, body {
 <div id="screen-profile" class="screen">
   <div id="profile-header">
     <button id="profile-back" onclick="App.goTo('select')">←</button>
-    <div id="profile-nick-display"></div>
+    <div>
+      <div id="profile-nick-display"></div>
+      <div id="profile-level-display"></div>
+    </div>
   </div>
   <div id="profile-scroll">
     <div class="profile-section-title">Рекорды</div>
@@ -698,6 +706,7 @@ const state = {
   screen:'splash', releaseQueue:[], currentRelease:null,
   difficulty:16, cards:[], flipped:[], matched:0, moves:0, lock:false,
   finalTime:0, finalMoves:0,
+  fromProfile: false,
 };
 
 // ═══════════════════════════════════════
@@ -765,7 +774,16 @@ const App = {
     btnNew.classList.remove('sweeping','unlocked'); btnNew.style.setProperty('--sweep','0deg');
     const vid = document.getElementById('win-video'); vid.pause(); vid.currentTime = 0;
     document.getElementById('win-mini-bar').classList.remove('show');
+    state.fromProfile = false;
     initGame(); showScreen('game');
+  },
+
+  backFromWin() {
+    const vid = document.getElementById('win-video'); vid.pause(); vid.currentTime = 0;
+    document.getElementById('win-mini-bar').classList.remove('show');
+    document.getElementById('win-track-reveal').classList.remove('show');
+    state.fromProfile = false;
+    App.goTo('profile');
   },
 
   openPrize() {
@@ -950,18 +968,51 @@ function setupWinScreen() {
     }, 300);
   }, 1800);
 
-  // New game sweep — 5 sec
-  const btnNew=document.getElementById('btn-new-game');
-  btnNew.disabled=true; btnNew.classList.remove('unlocked'); btnNew.classList.add('sweeping'); btnNew.style.setProperty('--sweep','0deg');
-  if (_newGameRaf) cancelAnimationFrame(_newGameRaf);
-  const t0=performance.now(), DUR=5000;
-  function sweepTick(now) {
-    const p=Math.min((now-t0)/DUR,1);
-    btnNew.style.setProperty('--sweep',Math.round(p*360)+'deg');
-    if (p<1) { _newGameRaf=requestAnimationFrame(sweepTick); }
-    else { btnNew.disabled=false; btnNew.classList.remove('sweeping'); btnNew.classList.add('unlocked'); btnNew.style.setProperty('--sweep','0deg'); _newGameRaf=null; }
+  // Show/hide correct primary button
+  const btnNew  = document.getElementById('btn-new-game');
+  const btnBack = document.getElementById('btn-back-from-win');
+  if (state.fromProfile) {
+    btnNew.classList.add('hidden');
+    btnBack.classList.remove('hidden');
+    if (_newGameRaf) { cancelAnimationFrame(_newGameRaf); _newGameRaf=null; }
+  } else {
+    btnNew.classList.remove('hidden');
+    btnBack.classList.add('hidden');
+    // New game sweep — 5 sec
+    btnNew.disabled=true; btnNew.classList.remove('unlocked'); btnNew.classList.add('sweeping'); btnNew.style.setProperty('--sweep','0deg');
+    if (_newGameRaf) cancelAnimationFrame(_newGameRaf);
+    const t0=performance.now(), DUR=5000;
+    function sweepTick(now) {
+      const p=Math.min((now-t0)/DUR,1);
+      btnNew.style.setProperty('--sweep',Math.round(p*360)+'deg');
+      if (p<1) { _newGameRaf=requestAnimationFrame(sweepTick); }
+      else { btnNew.disabled=false; btnNew.classList.remove('sweeping'); btnNew.classList.add('unlocked'); btnNew.style.setProperty('--sweep','0deg'); _newGameRaf=null; }
+    }
+    _newGameRaf=requestAnimationFrame(sweepTick);
   }
-  _newGameRaf=requestAnimationFrame(sweepTick);
+}
+
+// ═══════════════════════════════════════
+// PLAYER LEVEL
+// ═══════════════════════════════════════
+function calcLevel() {
+  const wonCount = WonTracks.get().length;
+  // Points from won tracks
+  let pts = wonCount * 10;
+  // Points from records by difficulty
+  const bonus = {4:5, 16:10, 36:20, 64:30};
+  Object.entries(bonus).forEach(([d,b]) => { if (Records.get(parseInt(d))) pts += b; });
+
+  const LEVELS = [
+    { min:0,   label:'Новичок',  emoji:'🌱' },
+    { min:15,  label:'Игрок',    emoji:'🎮' },
+    { min:35,  label:'Знаток',   emoji:'🧩' },
+    { min:70,  label:'Мастер',   emoji:'🏆' },
+    { min:120, label:'Легенда',  emoji:'⭐' },
+  ];
+  let level = LEVELS[0];
+  for (const l of LEVELS) { if (pts >= l.min) level = l; }
+  return { ...level, pts };
 }
 
 // ═══════════════════════════════════════
@@ -969,6 +1020,8 @@ function setupWinScreen() {
 // ═══════════════════════════════════════
 function renderProfile() {
   document.getElementById('profile-nick-display').textContent = Nick.get();
+  const lv = calcLevel();
+  document.getElementById('profile-level-display').textContent = `${lv.emoji} ${lv.label} · ${lv.pts} очков`;
 
   // Records
   [4,16,36,64].forEach(diff=>{
@@ -1001,24 +1054,16 @@ function renderProfile() {
 // REPLAY TRACK FROM PROFILE
 // ═══════════════════════════════════════
 function replayTrack(trackData) {
-  // Build a minimal release-like object from stored track data
   const fakeRelease = {
-    id: trackData.id,
-    artist: trackData.artist,
-    title: trackData.title,
+    id: trackData.id, artist: trackData.artist, title: trackData.title,
     cover: trackData.cover,
-    video: trackData.video || (state.currentRelease && state.currentRelease.id === trackData.id ? state.currentRelease.video : ''),
+    video: trackData.video || '',
     links: {},
   };
-  // Try to find full release data for links + video
   const full = (typeof RELEASES !== 'undefined') && RELEASES.find(r => r.id === trackData.id);
   if (full) { fakeRelease.video = full.video; fakeRelease.links = full.links; }
-
-  // Temporarily set as current for share/buttons
-  const prev = state.currentRelease;
   state.currentRelease = fakeRelease;
-
-  // Setup win screen and navigate
+  state.fromProfile = true;
   showScreen('win');
   setupWinScreen();
 }
