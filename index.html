@@ -339,7 +339,7 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
     <button id="lmap-back" onclick="App.goTo('home')">←</button>
     <div id="lmap-title">Mirazh Vol. 1</div>
   </div>
-  <div id="lmap-scroll" id="lmap-list"></div>
+  <div id="lmap-scroll"></div>
 </div>
 
 <!-- GAME -->
@@ -683,7 +683,7 @@ const GRID_CONFIGS={4:[2,2],8:[4,2],12:[4,3],16:[4,4],24:[6,4],36:[6,6],48:[8,6]
 // ═══════════════════════════════════════
 const state={
   screen:'splash',
-  activePlaylistId: PLAYLISTS[0].id,
+  activePlaylistId: (typeof PLAYLISTS !== "undefined" && PLAYLISTS[0]) ? PLAYLISTS[0].id : null,
   currentPlaylistId: null,
   currentLevelIndex: 0,
   currentLevel: null,
