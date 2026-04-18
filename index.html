@@ -59,7 +59,7 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 #home-nick-block{flex:1;min-width:0}
 #home-nickname{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #home-level{font-size:11px;color:var(--text2);margin-top:1px}
-#mute-btn{width:34px;height:34px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:16px;flex-shrink:0;transition:opacity 150ms ease}
+#mute-btn{width:34px;height:34px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:16px;flex-shrink:0;transition:opacity 150ms ease,transform 120ms var(--ease-out)}
 #mute-btn.muted{opacity:0.5}
 
 /* Stats pills */
@@ -395,7 +395,7 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
       <div id="home-nickname">—</div>
       <div id="home-level">🌱 Новичок</div>
     </div>
-    <div id="mute-btn" onclick="App.toggleMute()">🔊</div>
+    <div id="mute-btn" onclick="App.toggleMute()">🔇</div>
   </div>
   <div id="home-stats">
     <div class="home-stat">⭐ <strong id="hs-stars">0</strong> звёзд</div>
@@ -870,7 +870,7 @@ function runSplash(){
     },200);
     // Go to next screen
     setTimeout(()=>{
-      if(Nick.exists()){ showScreen('home'); startBgMusic(); }
+      if(Nick.exists()){ showScreen('home'); }
       else showScreen('nickname');
     },1200);
   });
@@ -1085,7 +1085,6 @@ function getCardEl(i){ return document.querySelector(`.card[data-idx="${i}"]`); 
 
 function onCardClick(i,el){
   if(state.lock||el.classList.contains('flipped')||el.classList.contains('matched')) return;
-  startBgMusic(); // ensure music starts on first interaction (Safari)
   try{ getACtx().resume(); }catch(e){}
   SFX.flip();
   el.classList.add('flipped'); state.flipped.push(i);
@@ -1300,7 +1299,6 @@ const App = {
     if(!val) return;
     Nick.set(val);
     // Avatar already saved via picker
-    startBgMusic();
     showScreen('home');
   },
 
@@ -1339,10 +1337,22 @@ const App = {
   },
 
   toggleMute(){
-    _bgMuted=!_bgMuted;
     const btn=document.getElementById('mute-btn');
-    btn.textContent=_bgMuted?'🔇':'🔊';
-    btn.classList.toggle('muted',_bgMuted);
+    if(!_bgStarted){
+      // First tap — start music
+      _bgStarted=true;
+      _bgMuted=false;
+      try{
+        getACtx().resume().then(()=>bgTick()).catch(()=>bgTick());
+      }catch(e){ bgTick(); }
+      btn.textContent='🔊';
+      btn.classList.remove('muted');
+    } else {
+      _bgMuted=!_bgMuted;
+      btn.textContent=_bgMuted?'🔇':'🔊';
+      btn.classList.toggle('muted',_bgMuted);
+      if(!_bgMuted && _bgTimeout===null) bgTick();
+    }
   },
 
   openPrize(){
