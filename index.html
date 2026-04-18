@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Mirazh</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>🎴</text></svg>">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -364,23 +365,13 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
     <div class="home-stat">🎵 <strong id="hs-tracks">0</strong> треков</div>
     <div class="home-stat">🏆 <strong id="hs-score">0</strong> очков</div>
   </div>
-  <div id="home-active" onclick="App.goToLevelMap(null)">
-    <div id="home-active-inner">
-      <div id="home-active-cover">
-        <img class="active-cover-img big" id="hac-0" src="" alt="">
-        <img class="active-cover-img" id="hac-1" src="" alt="">
-        <img class="active-cover-img" id="hac-2" src="" alt="">
-      </div>
-      <div id="home-active-info">
-        <div id="home-active-name">—</div>
-        <div id="home-active-prog">—</div>
-        <div id="home-active-bar"><div id="home-active-fill" style="width:0%"></div></div>
-      </div>
-      <div id="home-continue">Играть →</div>
-    </div>
-  </div>
   <div id="home-carousel-label">Плейлисты</div>
   <div id="home-carousel"></div>
+  <div id="home-lmap-header">
+    <div id="home-lmap-title">—</div>
+    <div id="home-lmap-prog">—</div>
+  </div>
+  <div id="home-lmap-scroll"></div>
 </div>
 
 <!-- LEVEL MAP -->
