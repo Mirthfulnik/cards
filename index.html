@@ -327,6 +327,9 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 #edit-nick-input::placeholder{color:var(--text3)}
 #edit-save{width:100%;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;padding:15px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out)}
 #edit-save:active{transform:scale(0.97)}
+#edit-reset{width:100%;border-radius:16px;border:1.5px solid rgba(231,76,60,0.5);cursor:pointer;background:transparent;color:#e74c3c;font-weight:700;font-size:14px;font-family:'Outfit',sans-serif;padding:14px;margin-top:12px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),background 120ms ease}
+#edit-reset:active{transform:scale(0.97);background:rgba(231,76,60,0.1)}
+.edit-danger-label{font-size:11px;color:rgba(231,76,60,0.6);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin:24px 0 10px;padding-top:20px;border-top:0.5px solid rgba(255,255,255,0.07)}
 
 /* ── PLAYLIST CARDS with covers (restored) ── */
 .pl-card{flex-shrink:0;width:110px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 140ms var(--ease-out);position:relative}
@@ -508,6 +511,8 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
       <input id="edit-nick-input" type="text" maxlength="16" placeholder="Твой никнейм..." autocomplete="off" autocorrect="off">
     </div>
     <button id="edit-save" onclick="App.saveProfileEdit()">Сохранить</button>
+    <div class="edit-danger-label">Опасная зона</div>
+    <button id="edit-reset" onclick="App.resetGame()">🗑 Сбросить прогресс игры</button>
   </div>
 </div>
 
@@ -1254,6 +1259,21 @@ const App = {
     stopWinVideo();
     if(_nextRaf){cancelAnimationFrame(_nextRaf);_nextRaf=null;}
     state.fromProfile=false;
+    showScreen('home');
+  },
+
+  resetGame(){
+    if(!confirm('Сбросить весь прогресс? Звёзды, рекорды и коллекция будут удалены. Ник и аватар сохранятся.')) return;
+    // Clear progress keys
+    try{
+      const keep=[Nick.key, Nick.avatarKey, 'mirazh_rating_seed'];
+      Object.keys(localStorage).forEach(k=>{
+        if(!keep.includes(k)) localStorage.removeItem(k);
+      });
+    }catch(e){}
+    // Reset state
+    state.activePlaylistId=(typeof PLAYLISTS!=='undefined'&&PLAYLISTS[0])?PLAYLISTS[0].id:null;
+    state.currentPlaylistId=null;
     showScreen('home');
   },
 
