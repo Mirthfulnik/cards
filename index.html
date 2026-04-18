@@ -305,6 +305,8 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 
 /* ── WIN LEVELS BTN ── */
 .btn-levels{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.18);color:#fff}
+#win-levels-fab{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;z-index:20;background:rgba(8,8,16,0.55);border:0.5px solid rgba(255,255,255,0.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:20px;padding:7px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:12px;font-weight:600;font-family:'Outfit',sans-serif;color:#fff;transition:transform 110ms var(--ease-out),opacity 110ms var(--ease-out)}
+#win-levels-fab:active{transform:scale(0.94);opacity:0.8}
 
 /* home avatar shows emoji */
 #home-avatar{font-size:22px}
@@ -454,6 +456,10 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 <div id="screen-win" class="screen">
   <div id="win-video-wrap">
     <video id="win-video" playsinline loop muted><source id="win-video-src" src="" type="video/mp4"></video>
+    <button id="win-levels-fab" onclick="App.goToLevelsFromWin()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Уровни
+    </button>
     <div id="win-track-reveal">
       <div id="reveal-cover-shell"><img id="reveal-cover" src="" alt=""></div>
       <div id="reveal-artist"></div>
@@ -471,10 +477,7 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         Следующий уровень
       </button>
-      <button class="win-btn btn-levels" id="btn-levels" onclick="App.goToLevelsFromWin()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Уровни
-      </button>
+
       <button class="win-btn btn-back-win hidden" id="btn-back-from-win" onclick="App.backFromWin()">← Назад</button>
       <button class="win-btn btn-share" onclick="App.share()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
