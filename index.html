@@ -262,6 +262,51 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 .coll-play{font-size:20px;color:var(--accent);flex-shrink:0}
 #prof-no-collection{font-size:13px;color:var(--text3);text-align:center;padding:20px 0}
 
+
+/* ── EMOJI PICKER ── */
+#nick-emoji-pick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px;max-width:280px}
+.ep-btn{font-size:26px;width:44px;height:44px;border-radius:12px;border:2px solid transparent;background:rgba(255,255,255,0.06);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),border-color 120ms ease;display:flex;align-items:center;justify-content:center}
+.ep-btn.selected{border-color:var(--accent);background:rgba(255,204,0,0.12);transform:scale(1.1)}
+#nick-selected-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:16px}
+#nick-selected-avatar{font-size:48px;line-height:1}
+#nick-selected-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em}
+
+/* ── HOME LEVEL MAP INLINE ── */
+#home-carousel-label{flex-shrink:0;padding:0 16px 6px;font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
+#home-carousel{flex-shrink:0;display:flex;gap:10px;padding:0 16px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#home-carousel::-webkit-scrollbar{display:none}
+.pl-card{flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 140ms var(--ease-out)}
+.pl-card:active:not(.locked-pl){transform:scale(0.94)}
+.pl-chip{border-radius:20px;padding:1.5px}
+.pl-chip-inner{border-radius:18px;padding:7px 14px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.pl-chip.active-pl .pl-chip-inner{background:var(--accent);box-shadow:0 0 12px rgba(255,204,0,0.3)}
+.pl-chip.active-pl .pl-chip-name{color:#080810;font-weight:700}
+.pl-chip:not(.active-pl) .pl-chip-inner{background:var(--glass);border:0.5px solid var(--gb)}
+.pl-chip.locked-pl{opacity:0.5;cursor:default}
+.pl-chip-emoji{font-size:14px}
+.pl-chip-name{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:600;color:var(--text)}
+.pl-chip-soon{font-size:9px;background:rgba(255,255,255,0.2);border-radius:6px;padding:1px 5px;color:rgba(0,0,0,0.6);font-weight:700}
+
+#home-lmap-header{flex-shrink:0;display:flex;align-items:baseline;justify-content:space-between;padding:4px 16px 6px}
+#home-lmap-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900}
+#home-lmap-prog{font-size:11px;color:var(--text2)}
+#home-lmap-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px 24px;padding-bottom:max(24px,env(safe-area-inset-bottom))}
+#home-lmap-scroll::-webkit-scrollbar{display:none}
+
+/* ── PROFILE EDIT ── */
+#prof-edit-btn{background:rgba(255,255,255,0.08);border:0.5px solid var(--gb);border-radius:14px;padding:4px 10px;font-size:11px;color:var(--text2);cursor:pointer;-webkit-tap-highlight-color:transparent;margin-left:auto;flex-shrink:0}
+#prof-edit-panel{display:none;padding:12px 0;border-top:0.5px solid rgba(255,255,255,0.08);margin-top:8px}
+#prof-edit-panel.show{display:block}
+#prof-edit-emoji{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+#prof-edit-input-wrap{border-radius:14px;padding:1.5px;background:linear-gradient(135deg,rgba(255,204,0,0.3),rgba(255,107,53,0.2));margin-bottom:10px}
+#prof-edit-input{width:100%;border-radius:calc(14px - 1.5px);background:rgba(255,255,255,0.06);border:none;outline:none;padding:12px 14px;font-size:15px;font-family:'Outfit',sans-serif;color:#fff;font-weight:500}
+#prof-save-btn{width:100%;border-radius:14px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:14px;font-family:'Outfit',sans-serif;padding:12px}
+
+/* ── WIN LEVELS BTN ── */
+.btn-levels{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.18);color:#fff}
+
+/* home avatar shows emoji */
+#home-avatar{font-size:22px}
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){.screen,.card-inner,.win-btn,.lmap-card{transition:opacity 150ms ease!important;transform:none!important;animation:none!important}.card.matched{opacity:0!important}#gift-btn{animation:none!important}}
 </style>
@@ -291,8 +336,13 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 <!-- NICKNAME -->
 <div id="screen-nickname" class="screen">
   <div id="nick-logo">Mirazh</div>
-  <div id="nick-sub">Игровой маркетплейс<br>от Zhara, Lotus & Ovokacho</div>
-  <div id="nick-label">Твой никнейм</div>
+  <div id="nick-sub">Выбери аватар и придумай никнейм</div>
+  <div id="nick-emoji-pick"></div>
+  <div id="nick-selected-wrap">
+    <div id="nick-selected-avatar">🎮</div>
+    <div id="nick-selected-label">Твой аватар</div>
+  </div>
+  <div id="nick-label">Никнейм</div>
   <div id="nick-input-wrap">
     <input id="nick-input" type="text" maxlength="16" placeholder="Введи никнейм..." autocomplete="off" autocorrect="off" spellcheck="false">
   </div>
@@ -303,7 +353,7 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 <div id="screen-home" class="screen">
   <div id="home-header">
     <div id="home-avatar" onclick="App.goTo('profile')">?</div>
-    <div id="home-nick-block">
+    <div id="home-nick-block" onclick="App.goTo('profile')" style="cursor:pointer">
       <div id="home-nickname">—</div>
       <div id="home-level">🌱 Новичок</div>
     </div>
@@ -398,6 +448,10 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         Следующий уровень
       </button>
+      <button class="win-btn btn-levels" id="btn-levels" onclick="App.goToLevelsFromWin()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Уровни
+      </button>
       <button class="win-btn btn-back-win hidden" id="btn-back-from-win" onclick="App.backFromWin()">← Назад</button>
       <button class="win-btn btn-share" onclick="App.share()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -417,10 +471,19 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 <div id="screen-profile" class="screen">
   <div id="prof-header">
     <button id="prof-back" onclick="App.goTo('home')">←</button>
-    <div>
+    <div id="prof-avatar-display" style="font-size:32px;line-height:1">🎮</div>
+    <div style="flex:1;min-width:0">
       <div id="prof-nick">—</div>
       <div id="prof-level">—</div>
     </div>
+    <div id="prof-edit-btn" onclick="App.toggleProfileEdit()">✏️ Изменить</div>
+  </div>
+  <div id="prof-edit-panel" style="padding:0 16px 12px;display:none">
+    <div id="prof-edit-emoji"></div>
+    <div id="prof-edit-input-wrap">
+      <input id="prof-edit-input" type="text" maxlength="16" placeholder="Новый никнейм..." autocomplete="off">
+    </div>
+    <button id="prof-save-btn" onclick="App.saveProfileEdit()">Сохранить</button>
   </div>
   <div id="prof-tabs">
     <div class="prof-tab active" onclick="App.switchTab('stats')">Статистика</div>
@@ -601,10 +664,19 @@ const Collection = {
 };
 
 // Nickname
+
+const EXTRA_PLAYLISTS = [
+  {id:'vol_2',name:'Mirazh Vol. 2',emoji:'🔥',soon:true},
+  {id:'vol_3',name:'Rap Edition',emoji:'🎤',soon:true},
+  {id:'vol_4',name:'Electronic',emoji:'🎹',soon:true},
+];
+const AVATAR_EMOJIS = ['🎮', '🎵', '🎸', '🎤', '🎧', '🎹', '🏆', '⭐', '🔥', '🦁', '🐺', '🦊', '🐯', '🦋', '🌟', '💎', '🚀', '🎯', '🎪', '🎭', '🌙', '❤️', '🍀', '🎁'];
 const Nick = {
-  key:'mirazh_nickname',
+  key:'mirazh_nickname', avatarKey:'mirazh_avatar',
   get(){ return localStorage.getItem(this.key)||''; },
   set(n){ localStorage.setItem(this.key,n.trim()); },
+  getAvatar(){ return localStorage.getItem(this.avatarKey)||'🎮'; },
+  setAvatar(e){ localStorage.setItem(this.avatarKey,e); },
   exists(){ return !!this.get(); }
 };
 
@@ -750,8 +822,9 @@ function runSplash(){
 // ═══════════════════════════════════════
 function renderHome(){
   const nick=Nick.get();
+  const avatar=Nick.getAvatar();
   document.getElementById('home-nickname').textContent=nick;
-  document.getElementById('home-avatar').textContent=nick.slice(0,2).toUpperCase();
+  document.getElementById('home-avatar').textContent=avatar;
   const lv=calcLevel();
   document.getElementById('home-level').textContent=`${lv.emoji} ${lv.label} · ${lv.pts} очков`;
   const {stars,tracks}=Progress.totalStats();
@@ -759,36 +832,69 @@ function renderHome(){
   document.getElementById('hs-tracks').textContent=tracks;
   document.getElementById('hs-score').textContent=lv.pts;
 
-  // Active playlist banner
-  const pl=PLAYLISTS.find(p=>p.id===state.activePlaylistId)||PLAYLISTS[0];
-  const prog=Progress.playlistProgress(pl.id);
-  document.getElementById('home-active-name').textContent=pl.name;
-  document.getElementById('home-active-prog').textContent=`${prog.done} / ${pl.levels.length} уровней · ⭐${prog.stars}`;
-  document.getElementById('home-active-fill').style.width=(prog.done/pl.levels.length*100)+'%';
-  // Cover composite
-  if(pl.covers){ pl.covers.forEach((src,i)=>{ const el=document.getElementById('hac-'+i); if(el){el.src=src;el.style.display='block';} }); }
-
-  // Carousel
+  // Playlist chip carousel
   const carousel=document.getElementById('home-carousel');
   carousel.innerHTML='';
   PLAYLISTS.forEach((p,pi)=>{
-    const prog2=Progress.playlistProgress(p.id);
     const isLocked=pi>0&&Progress.playlistProgress(PLAYLISTS[pi-1].id).done<PLAYLISTS[pi-1].levels.length;
-    const card=document.createElement('div'); card.className='pl-card';
-    const coverGrid=p.covers?`<img class="pl-cover-img big" src="${p.covers[0]}" alt=""><img class="pl-cover-img" src="${p.covers[1]||p.covers[0]}" alt=""><img class="pl-cover-img" src="${p.covers[2]||p.covers[0]}" alt="">`:
-      `<img class="pl-cover-img big" src="${p.levels[0].cover}" alt="">`;
-    card.innerHTML=`
-      <div class="pl-cover-wrap">
-        <div class="pl-cover-grid">${coverGrid}</div>
-        ${isLocked?'<div class="pl-lock">🔒</div>':''}
-      </div>
-      <div class="pl-name">${p.name}</div>
-      <div class="pl-prog-text">${prog2.done}/${prog2.total} уровней</div>
-      <div class="pl-prog-bar"><div class="pl-prog-fill" style="width:${prog2.total?prog2.done/prog2.total*100:0}%"></div></div>`;
+    const isActive=p.id===state.activePlaylistId;
+    const card=document.createElement('div');
+    card.className='pl-card pl-chip'+(isActive?' active-pl':'')+(isLocked?' locked-pl':'');
+    card.innerHTML=`<div class="pl-chip-inner"><span class="pl-chip-emoji">${p.covers?'🎵':'🎵'}</span><span class="pl-chip-name">${p.name}</span>${isLocked?'<span class="pl-chip-soon">🔒</span>':''}</div>`;
     if(!isLocked){
-      card.addEventListener('click',()=>{ state.currentPlaylistId=p.id; state.activePlaylistId=p.id; showScreen('levelmap'); });
+      card.addEventListener('click',()=>{ state.activePlaylistId=p.id; state.currentPlaylistId=p.id; renderHome(); });
     }
     carousel.appendChild(card);
+  });
+  // Extra "Скоро" playlists
+  EXTRA_PLAYLISTS.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='pl-card pl-chip locked-pl';
+    card.innerHTML=`<div class="pl-chip-inner"><span class="pl-chip-emoji">${p.emoji}</span><span class="pl-chip-name">${p.name}</span><span class="pl-chip-soon">Скоро</span></div>`;
+    carousel.appendChild(card);
+  });
+
+  // Inline level map
+  const pl=PLAYLISTS.find(p=>p.id===state.activePlaylistId)||PLAYLISTS[0];
+  const prog=Progress.playlistProgress(pl.id);
+  document.getElementById('home-lmap-title').textContent=pl.name;
+  document.getElementById('home-lmap-prog').textContent=`${prog.done}/${pl.levels.length} · ⭐${prog.stars}`;
+  renderInlineLevelMap(pl);
+}
+
+function renderInlineLevelMap(pl){
+  const scroll=document.getElementById('home-lmap-scroll');
+  scroll.innerHTML='';
+  pl.levels.forEach((lvl,i)=>{
+    const prog=Progress.getLevel(pl.id,i);
+    const unlocked=Progress.isUnlocked(pl.id,i);
+    const completed=!!(prog&&prog.completed);
+    const stars=prog?prog.stars||0:0;
+    const starsHtml=[1,2,3].map(s=>`<span class="lmap-star ${s<=stars?'lit':''}">${s<=stars?'⭐':'☆'}</span>`).join('');
+    let cls='lmap-card';
+    if(!unlocked) cls+=' locked';
+    else if(completed) cls+=' done';
+    else cls+=' current';
+
+    const wrap=document.createElement('div'); wrap.className='lmap-level';
+    if(i>0){const conn=document.createElement('div');conn.className='lmap-connector';wrap.appendChild(conn);}
+    const card=document.createElement('div'); card.className=cls;
+    card.innerHTML=`<div class="lmap-card-inner">
+      <div class="lmap-cover-wrap">
+        <img class="lmap-cover ${unlocked?'':'lmap-cover-blur'}" src="${lvl.cover}" alt="">
+        ${!unlocked?'<div class="lmap-lock-icon">🔒</div>':''}
+      </div>
+      <div class="lmap-info">
+        <div class="lmap-num">Уровень ${i+1} · ${lvl.cards} карточек</div>
+        <div class="lmap-artist">${lvl.artist}</div>
+        <div class="lmap-track">${lvl.title}</div>
+        <div class="lmap-stars">${starsHtml}</div>
+      </div>
+    </div>`;
+    if(unlocked){
+      card.addEventListener('click',()=>{ state.currentPlaylistId=pl.id; state.currentLevelIndex=i; state.currentLevel=lvl; startLevel(); });
+    }
+    wrap.appendChild(card); scroll.appendChild(wrap);
   });
 }
 
@@ -1034,7 +1140,9 @@ function stopWinVideo(){
 // ═══════════════════════════════════════
 function renderProfile(){
   const nick=Nick.get();
+  const avatar=Nick.getAvatar();
   document.getElementById('prof-nick').textContent=nick;
+  document.getElementById('prof-avatar-display').textContent=avatar;
   const lv=calcLevel();
   document.getElementById('prof-level').textContent=`${lv.emoji} ${lv.label} · ${lv.pts} очков`;
 
@@ -1080,17 +1188,60 @@ const App = {
   goTo(screen){ showScreen(screen); },
 
   goToLevelMap(plId){
-    if(plId) state.currentPlaylistId=plId;
+    if(plId){ state.currentPlaylistId=plId; state.activePlaylistId=plId; }
     else state.currentPlaylistId=state.activePlaylistId;
-    showScreen('levelmap');
+    showScreen('home');
+  },
+
+  goToLevelsFromWin(){
+    stopWinVideo();
+    if(_nextRaf){cancelAnimationFrame(_nextRaf);_nextRaf=null;}
+    state.fromProfile=false;
+    showScreen('home');
   },
 
   saveNickname(){
     const val=document.getElementById('nick-input').value.trim();
     if(!val) return;
     Nick.set(val);
+    // Avatar already saved via picker
     startBgMusic();
     showScreen('home');
+  },
+
+  toggleProfileEdit(){
+    const panel=document.getElementById('prof-edit-panel');
+    const isOpen=panel.style.display==='block';
+    panel.style.display=isOpen?'none':'block';
+    if(!isOpen){
+      // Fill emoji picker
+      const container=document.getElementById('prof-edit-emoji');
+      container.innerHTML='';
+      const cur=Nick.getAvatar();
+      AVATAR_EMOJIS.forEach(e=>{
+        const btn=document.createElement('div'); btn.className='ep-btn'+(e===cur?' selected':'');
+        btn.textContent=e; btn.dataset.emoji=e;
+        btn.addEventListener('click',()=>{
+          container.querySelectorAll('.ep-btn').forEach(b=>b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+        container.appendChild(btn);
+      });
+      document.getElementById('prof-edit-input').value=Nick.get();
+    }
+  },
+
+  saveProfileEdit(){
+    const panel=document.getElementById('prof-edit-panel');
+    const newNick=document.getElementById('prof-edit-input').value.trim();
+    const sel=document.querySelector('#prof-edit-emoji .ep-btn.selected');
+    if(newNick.length>=2) Nick.set(newNick);
+    if(sel) Nick.setAvatar(sel.dataset.emoji);
+    panel.style.display='none';
+    renderProfile();
+    // Update home header too
+    document.getElementById('home-nickname').textContent=Nick.get();
+    document.getElementById('home-avatar').textContent=Nick.getAvatar();
   },
 
   toggleMute(){
@@ -1152,6 +1303,25 @@ const nickInput=document.getElementById('nick-input');
 const nickConfirm=document.getElementById('nick-confirm');
 nickInput.addEventListener('input',()=>{ nickConfirm.disabled=nickInput.value.trim().length<2; });
 nickInput.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!nickConfirm.disabled) App.saveNickname(); });
+// Init emoji picker on nickname screen
+(function(){
+  const pick=document.getElementById('nick-emoji-pick');
+  if(!pick||!pick.appendChild) return;
+  let selectedEmoji=AVATAR_EMOJIS[0];
+  Nick.setAvatar(selectedEmoji);
+  AVATAR_EMOJIS.forEach((e,i)=>{
+    const btn=document.createElement('div'); btn.className='ep-btn'+(i===0?' selected':'');
+    btn.textContent=e; btn.dataset.emoji=e;
+    btn.addEventListener('click',()=>{
+      pick.querySelectorAll('.ep-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedEmoji=e;
+      document.getElementById('nick-selected-avatar').textContent=e;
+      Nick.setAvatar(e);
+    });
+    pick.appendChild(btn);
+  });
+})();
 
 // ═══════════════════════════════════════
 // RESIZE
