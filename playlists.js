@@ -23,12 +23,12 @@ const PLAYLISTS = [
         cover: 'assets/levels/sa_malboro/cover.jpg',
         video: 'assets/levels/sa_malboro/video.mp4',
         links: {
-          yandex:  null,
-          vk:      null,
-          zvuk:    null,
-          kion:    null,
-          spotify: null,
-          apple:   null,
+          yandex:  'https://music.yandex.ru/album/41489388',
+          vk:      'https://vk.com/music/album/-2000307783_27307783_f22ae352cfe204e1a4',
+          zvuk:    'https://zvuk.com/release/49810000',
+          kion:    'https://music.mts.ru/album/41489388',
+          spotify: 'https://open.spotify.com/album/08vglVZPKBCDOKfs8zE4Ob',
+          apple:   'https://music.apple.com/ru/album/%D0%BC%D0%B0%D0%BB%D1%8C%D0%B1%D0%BE%D1%80%D0%BE-single/1891317598?app=music',
         }
       },
       {
