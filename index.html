@@ -704,7 +704,7 @@ const EXTRA_PLAYLISTS = [
   {id:'vol_3',name:'Rap Edition',emoji:'🎤',soon:true},
   {id:'vol_4',name:'Electronic',emoji:'🎹',soon:true},
 ];
-const AVATAR_EMOJIS = ['🎮', '🎵', '🎸', '🎤', '🎧', '🎹', '🏆', '⭐', '🔥', '🦁', '🐺', '🦊', '🐯', '🦋', '🌟', '💎', '🚀', '🎯', '🎪', '🎭', '🌙', '❤️', '🍀', '🎁'];
+const AVATAR_EMOJIS = ['🎮', '🎵', '🎸', '🎤', '🎧', '🎹', '🏆', '⭐', '🔥', '🦁', '🐺', '🦊', '🐯', '🦋', '🌟', '💎', '🚀', '🎯', '🎪', '🎭', '🌙', '❤️', '🍀', '🎁', '👑', '⚡', '🌊', '🎲', '🦅', '🐉'];
 const Nick = {
   key:'mirazh_nickname', avatarKey:'mirazh_avatar',
   get(){ return localStorage.getItem(this.key)||''; },
@@ -931,7 +931,7 @@ function renderInlineLevelMap(pl){
     else cls+=' current';
 
     const wrap=document.createElement('div'); wrap.className='lmap-level';
-    if(i>0){const conn=document.createElement('div');conn.className='lmap-connector';wrap.appendChild(conn);}
+    if(ri>0){const conn=document.createElement('div');conn.className='lmap-connector';wrap.appendChild(conn);}
     const card=document.createElement('div'); card.className=cls;
     card.innerHTML=`<div class="lmap-card-inner">
       <div class="lmap-cover-wrap">
