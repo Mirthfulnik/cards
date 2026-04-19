@@ -472,6 +472,8 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
 /* CTA button */
 .ob-btn{margin-top:20px;padding:14px 32px;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out);width:100%}
 .ob-btn:active{transform:scale(0.97);opacity:0.85}
+.prof-cta-btn{width:100%;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:14px;font-family:'Outfit',sans-serif;padding:14px;margin-bottom:4px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
+.prof-cta-btn:active{transform:scale(0.97);opacity:0.85}
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){.screen,.card-inner,.win-btn,.lmap-card{transition:opacity 150ms ease!important;transform:none!important;animation:none!important}.card.matched{opacity:0!important}#gift-btn{animation:none!important}}
 </style>
@@ -756,9 +758,10 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
       <div id="prof-rating-list"></div>
     </div>
     <div id="prof-collection-tab" class="prof-section">
-      <div class="prof-label">Открытые треки</div>
+      <div id="prof-coll-cta"></div>
+      <div class="prof-label" style="margin-top:8px">Открытые треки</div>
       <div id="prof-collection"></div>
-      <div id="prof-no-collection" class="hidden">Ещё нет открытых треков — пройди уровень!</div>
+      <div id="prof-no-collection" class="hidden"></div>
     </div>
   </div>
 </div>
@@ -1113,7 +1116,7 @@ function showScreen(id){
   state.screen=id;
   if(id==='home') renderHome();
   if(id==='levelmap') renderLevelMap();
-  if(id==='profile'){ renderProfile(); renderQuests(); }
+  if(id==='profile'){ renderProfile(); renderQuests(); renderRating(); renderCollection(); }
 }
 
 // ═══════════════════════════════════════
@@ -1541,17 +1544,11 @@ function renderProfile(){
   document.getElementById('prof-avatar-display').textContent=avatar;
   const lv=calcLevel();
   document.getElementById('prof-level').textContent=`${lv.emoji} ${lv.label} · ${lv.pts} очков`;
+}
 
-  // Records
-  [4,8,12,16,24,36,48,64].forEach(n=>{
-    const r=Records.get(n);
-    const ve=document.getElementById(`rec-${n}`),se=document.getElementById(`rec-${n}s`);
-    if(r){ ve.textContent=r.moves+' ходов'; se.textContent=Timer.fmt(r.time); }
-    else { ve.innerHTML='<span style="color:var(--text3)">—</span>'; se.textContent=''; }
-  });
-
-  // Rating
+function renderRating(){
   const ratingList=document.getElementById('prof-rating-list');
+  if(!ratingList) return;
   ratingList.innerHTML='';
   const players=getRating();
   players.slice(0,15).forEach((p,i)=>{
@@ -1561,13 +1558,63 @@ function renderProfile(){
     row.innerHTML=`<div class="rating-pos ${i<3?'top':''}">${medal||i+1}</div><div class="rating-nick">${p.nick}${p.isMe?' (ты)':''}</div><div class="rating-score">${p.score}</div>`;
     ratingList.appendChild(row);
   });
+}
 
-  // Collection
+function renderCollection(){
   const coll=Collection.get().slice().reverse();
   const collEl=document.getElementById('prof-collection');
   const noCollEl=document.getElementById('prof-no-collection');
+  const ctaEl=document.getElementById('prof-coll-cta');
+  if(!collEl) return;
   collEl.innerHTML='';
-  if(!coll.length){ noCollEl.classList.remove('hidden'); return; }
+
+  if(!coll.length){
+    // No tracks yet — show CTA "Начать играть"
+    noCollEl.classList.add('hidden');
+    if(ctaEl){
+      ctaEl.innerHTML='';
+      const btn=document.createElement('button');
+      btn.className='prof-cta-btn';
+      btn.textContent='▶ Начать играть';
+      btn.addEventListener('click',()=>{
+        state.currentPlaylistId=PLAYLISTS[0].id;
+        state.activePlaylistId=PLAYLISTS[0].id;
+        state.currentLevelIndex=0;
+        state.currentLevel=PLAYLISTS[0].levels[0];
+        startLevel();
+      });
+      ctaEl.appendChild(btn);
+    }
+    return;
+  }
+
+  // Has tracks — show "Продолжить играть" CTA
+  if(ctaEl){
+    ctaEl.innerHTML='';
+    // Find next unplayed level
+    const pl=PLAYLISTS[0];
+    let nextIdx=0;
+    for(let i=0;i<pl.levels.length;i++){
+      const p=Progress.getLevel(pl.id,i);
+      if(!p||!p.completed){ nextIdx=i; break; }
+      if(i===pl.levels.length-1) nextIdx=-1; // all done
+    }
+    if(nextIdx>=0){
+      const nextLvl=pl.levels[nextIdx];
+      const btn=document.createElement('button');
+      btn.className='prof-cta-btn';
+      btn.textContent=`▶ Продолжить — Уровень ${nextIdx+1}`;
+      btn.addEventListener('click',()=>{
+        state.currentPlaylistId=pl.id;
+        state.activePlaylistId=pl.id;
+        state.currentLevelIndex=nextIdx;
+        state.currentLevel=nextLvl;
+        startLevel();
+      });
+      ctaEl.appendChild(btn);
+    }
+  }
+
   noCollEl.classList.add('hidden');
   coll.forEach(t=>{
     const item=document.createElement('div'); item.className='coll-item';
@@ -1649,7 +1696,7 @@ const App = {
     if(newNick.length>=2) Nick.set(newNick);
     if(sel){ Nick.setAvatar(sel.dataset.emoji); QuestCounters.flag('mq_avatar'); }
     showScreen('profile');
-    renderProfile();
+    renderProfile(); renderQuests(); renderRating(); renderCollection();
     document.getElementById('home-nickname').textContent=Nick.get();
     document.getElementById('home-avatar').textContent=Nick.getAvatar();
   },
@@ -1722,7 +1769,8 @@ const App = {
     document.getElementById('prof-rating').classList.toggle('show',tab==='rating');
     document.getElementById('prof-collection-tab').classList.toggle('show',tab==='collection');
     if(tab==='quests') renderQuests();
-    if(tab==='rating') renderProfile();
+    if(tab==='rating') renderRating();
+    if(tab==='collection') renderCollection();
   },
 };
 
