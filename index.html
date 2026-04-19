@@ -100,13 +100,13 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 .pl-prog-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 
 /* ══ LEVEL MAP ══ */
-#screen-levelmap{background:var(--dark);overflow:hidden}
-#lmap-header{flex-shrink:0;padding:12px 16px 10px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:12px}
-#lmap-back{width:36px;height:36px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-shrink:0;transition:transform 110ms var(--ease-out)}
-#lmap-back:active{transform:scale(0.88)}
-#lmap-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#lmap-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 20px 40px}
-#lmap-scroll::-webkit-scrollbar{display:none}
+
+
+
+
+
+
+
 .lmap-level{display:flex;flex-direction:column;align-items:center;margin-bottom:0;position:relative}
 .lmap-connector{width:2px;height:28px;background:repeating-linear-gradient(to bottom,rgba(255,255,255,0.2) 0px,rgba(255,255,255,0.2) 4px,transparent 4px,transparent 8px)}
 .lmap-card{width:100%;border-radius:18px;padding:1.5px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 140ms var(--ease-out)}
@@ -321,7 +321,7 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 #edit-scroll::-webkit-scrollbar{display:none}
 #edit-current-avatar{font-size:64px;line-height:1;text-align:center;margin:8px 0 16px}
 .edit-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:10px}
-#edit-emoji-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}
+#edit-emoji-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;justify-content:center}
 #edit-nick-wrap{border-radius:16px;padding:1.5px;background:linear-gradient(135deg,rgba(255,204,0,0.35),rgba(255,107,53,0.2));margin-bottom:20px}
 #edit-nick-input{width:100%;border-radius:calc(16px - 1.5px);background:rgba(255,255,255,0.06);border:none;outline:none;padding:14px 16px;font-size:16px;font-family:'Outfit',sans-serif;color:#fff;font-weight:500}
 #edit-nick-input::placeholder{color:var(--text3)}
@@ -411,20 +411,12 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
   <div id="home-carousel"></div>
 </div>
 
-<!-- LEVEL MAP -->
-<div id="screen-levelmap" class="screen">
-  <div id="lmap-header">
-    <button id="lmap-back" onclick="App.goTo('home')">←</button>
-    <div id="lmap-title">Mirazh Vol. 1</div>
-  </div>
-  <div id="lmap-scroll"></div>
-</div>
 
 <!-- GAME -->
 <div id="screen-game" class="screen">
   <div id="game-bg"></div>
   <div id="game-header">
-    <button id="game-back" onclick="App.goTo('levelmap')">←</button>
+    <button id="game-back" onclick="App.goTo('home')">←</button>
     <div id="game-level-info">
       <div id="game-level-num">Уровень 1</div>
       <div id="game-level-title">—</div>
@@ -982,8 +974,8 @@ function renderInlineLevelMap(pl){
 // ═══════════════════════════════════════
 function renderLevelMap(){
   const pl=PLAYLISTS.find(p=>p.id===state.currentPlaylistId)||PLAYLISTS[0];
-  document.getElementById('lmap-title').textContent=pl.name;
-  const scroll=document.getElementById('lmap-scroll');
+  // lmap-title removed
+  const scroll=document.getElementById('home-lmap-scroll'); if(!scroll) return;
   scroll.innerHTML='';
   pl.levels.forEach((lvl,i)=>{
     const prog=Progress.getLevel(pl.id,i);
@@ -1182,6 +1174,10 @@ function setupWinScreen(){
   const hasNext=pl&&state.currentLevelIndex<pl.levels.length-1;
   const btnNext=document.getElementById('btn-next');
   const btnBack=document.getElementById('btn-back-from-win');
+
+  // FAB 'Уровни' — hide when replaying from collection
+  const fabLevels=document.getElementById('win-levels-fab');
+  if(fabLevels) fabLevels.style.display=state.fromProfile?'none':'flex';
 
   if(state.fromProfile){
     btnNext.classList.add('hidden'); btnBack.classList.remove('hidden');
