@@ -101,6 +101,8 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 #home-nickname{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #home-level{font-size:11px;color:var(--text2);margin-top:1px}
 #mute-btn{width:34px;height:34px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:16px;flex-shrink:0;transition:opacity 150ms ease,transform 120ms var(--ease-out)}
+#ob-replay-btn{width:34px;height:34px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:16px;flex-shrink:0;transition:transform 120ms var(--ease-out)}
+#ob-replay-btn:active{transform:scale(0.88)}
 #mute-btn.muted{opacity:0.5}
 
 /* Stats pills */
@@ -611,6 +613,7 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
       <div id="home-nickname">—</div>
       <div id="home-level">🌱 Новичок</div>
     </div>
+    <div id="ob-replay-btn" onclick="Onboard.start()" title="Обучение">❓</div>
     <div id="theme-btn" onclick="App.toggleTheme()">🌙</div>
     <div id="mute-btn" onclick="App.toggleMute()">🔇</div>
   </div>
@@ -1610,8 +1613,9 @@ const App = {
     const val=document.getElementById('nick-input').value.trim();
     if(!val) return;
     Nick.set(val);
-    // Avatar already saved via picker
-    showScreen('home');
+    startBgMusic();
+    // New user — show onboarding
+    Onboard.start();
   },
 
   goToEdit(){
