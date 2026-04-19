@@ -24,7 +24,7 @@ body.theme-light{
   --text:#0a0a14;--text2:rgba(10,10,20,0.50);--text3:rgba(10,10,20,0.28);
 }
 body.theme-light #screen-splash{background:#f2f2f7}
-body.theme-light #screen-onboard,body.theme-light #screen-home,body.theme-light #screen-nickname,body.theme-light #screen-profile,body.theme-light #screen-edit,body.theme-light #screen-result{background:var(--bg)}
+body.theme-light #screen-onboard,body.theme-light #screen-home,body.theme-light #screen-nickname,body.theme-light #nick-sticky,body.theme-light #screen-profile,body.theme-light #screen-edit,body.theme-light #screen-result{background:var(--bg)}
 body.theme-light #game-bg::after{background:rgba(242,242,247,0.65)}
 body.theme-light .card-back{background:rgba(0,0,0,0.07);border-color:rgba(0,0,0,0.12);color:rgba(0,0,0,0.2)}
 body.theme-light .card-front{background:rgba(255,255,255,0.92);border-color:rgba(0,0,0,0.15)}
@@ -82,14 +82,14 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 #splash-logos img.show{opacity:1}
 
 /* ══ NICKNAME ══ */
-#screen-nickname{background:var(--bg);align-items:center;justify-content:center;padding:40px 28px;padding-top:max(40px,env(safe-area-inset-top));gap:0}
+#screen-nickname{background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0}
 #nick-logo{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
 #nick-sub{font-size:13px;color:var(--text2);margin-bottom:48px;text-align:center}
-#nick-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:10px;align-self:flex-start}
+#nick-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:10px;align-self:flex-start;width:100%}
 #nick-input-wrap{width:100%;border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(255,204,0,0.4),rgba(255,107,53,0.2));margin-bottom:14px}
 #nick-input{width:100%;border-radius:calc(18px - 1.5px);background:rgba(255,255,255,0.06);border:none;outline:none;padding:16px 18px;font-size:16px;font-family:'Outfit',sans-serif;color:#fff;font-weight:500;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08)}
 #nick-input::placeholder{color:var(--text3)}
-#nick-confirm{width:100%;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;padding:16px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
+#nick-confirm{width:100%;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;padding:16px;margin:0;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
 #nick-confirm:active{transform:scale(0.97);opacity:0.85}
 #nick-confirm:disabled{opacity:0.35;cursor:not-allowed}
 
@@ -308,6 +308,10 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 
 
 /* ── EMOJI PICKER ── */
+
+#nick-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;align-items:center;padding:max(40px,env(safe-area-inset-top)) 28px 16px;gap:0;width:100%}
+#nick-scroll::-webkit-scrollbar{display:none}
+#nick-sticky{flex-shrink:0;padding:12px 28px;padding-bottom:max(20px,env(safe-area-inset-bottom));background:var(--bg);border-top:0.5px solid var(--gb);width:100%}
 #nick-emoji-pick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px;max-width:280px}
 .ep-btn{font-size:26px;width:44px;height:44px;border-radius:12px;border:2px solid transparent;background:rgba(255,255,255,0.06);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),border-color 120ms ease;display:flex;align-items:center;justify-content:center}
 .ep-btn.selected{border-color:var(--accent);background:rgba(255,204,0,0.12);transform:scale(1.1)}
@@ -591,18 +595,22 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
 
 <!-- NICKNAME -->
 <div id="screen-nickname" class="screen">
-  <div id="nick-logo">Mirazh</div>
-  <div id="nick-sub">Выбери аватар и придумай никнейм</div>
-  <div id="nick-emoji-pick"></div>
-  <div id="nick-selected-wrap">
-    <div id="nick-selected-avatar">🎮</div>
-    <div id="nick-selected-label">Твой аватар</div>
+  <div id="nick-scroll">
+    <div id="nick-logo">Mirazh</div>
+    <div id="nick-sub">Выбери аватар и придумай никнейм</div>
+    <div id="nick-emoji-pick"></div>
+    <div id="nick-selected-wrap">
+      <div id="nick-selected-avatar">🎮</div>
+      <div id="nick-selected-label">Твой аватар</div>
+    </div>
+    <div id="nick-label">Никнейм</div>
+    <div id="nick-input-wrap">
+      <input id="nick-input" type="text" maxlength="16" placeholder="Введи никнейм..." autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
   </div>
-  <div id="nick-label">Никнейм</div>
-  <div id="nick-input-wrap">
-    <input id="nick-input" type="text" maxlength="16" placeholder="Введи никнейм..." autocomplete="off" autocorrect="off" spellcheck="false">
+  <div id="nick-sticky">
+    <button id="nick-confirm" disabled onclick="App.saveNickname()">Начать играть →</button>
   </div>
-  <button id="nick-confirm" disabled onclick="App.saveNickname()">Начать играть →</button>
 </div>
 
 <!-- HOME -->
