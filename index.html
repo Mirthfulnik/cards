@@ -24,7 +24,7 @@ body.theme-light{
   --text:#0a0a14;--text2:rgba(10,10,20,0.50);--text3:rgba(10,10,20,0.28);
 }
 body.theme-light #screen-splash{background:#f2f2f7}
-body.theme-light #screen-home,body.theme-light #screen-nickname,body.theme-light #screen-profile,body.theme-light #screen-edit,body.theme-light #screen-result{background:var(--bg)}
+body.theme-light #screen-onboard,body.theme-light #screen-home,body.theme-light #screen-nickname,body.theme-light #screen-profile,body.theme-light #screen-edit,body.theme-light #screen-result{background:var(--bg)}
 body.theme-light #game-bg::after{background:rgba(242,242,247,0.65)}
 body.theme-light .card-back{background:rgba(0,0,0,0.07);border-color:rgba(0,0,0,0.12);color:rgba(0,0,0,0.2)}
 body.theme-light .card-front{background:rgba(255,255,255,0.92);border-color:rgba(0,0,0,0.15)}
@@ -386,6 +386,86 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 .pl-prog-bar{height:2px;border-radius:1px;background:rgba(255,255,255,0.15);margin-top:4px;overflow:hidden}
 .pl-prog-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 .pl-soon-tag{position:absolute;top:6px;right:6px;background:rgba(8,8,16,0.75);border-radius:6px;padding:2px 6px;font-size:9px;font-weight:700;color:var(--accent);font-family:'Unbounded',sans-serif}
+
+/* ── QUESTS ── */
+#prof-quests{display:flex;flex-direction:column;gap:10px}
+.quest-item{border-radius:16px;padding:1.5px;background:var(--gb)}
+.quest-item.done{background:linear-gradient(135deg,rgba(255,204,0,0.5),rgba(255,107,53,0.3))}
+.quest-core{border-radius:calc(16px - 1.5px);background:var(--glass);box-shadow:inset 0 1px 0 var(--gs);padding:13px 14px;display:flex;align-items:center;gap:12px}
+.quest-item.done .quest-core{background:linear-gradient(145deg,rgba(255,204,0,0.1),rgba(255,107,53,0.06))}
+.quest-icon{font-size:24px;line-height:1;flex-shrink:0;width:36px;text-align:center}
+.quest-info{flex:1;min-width:0}
+.quest-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.quest-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.quest-rank{font-size:10px;font-family:'Unbounded',sans-serif;font-weight:700;color:var(--accent);margin-top:4px}
+.quest-progress{display:flex;align-items:center;gap:8px;margin-top:6px}
+.quest-bar{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.12);overflow:hidden}
+body.theme-light .quest-bar{background:rgba(0,0,0,0.10)}
+.quest-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 400ms var(--ease-out)}
+.quest-item.done .quest-bar-fill{width:100%!important}
+.quest-pct{font-size:10px;color:var(--text2);flex-shrink:0;min-width:28px;text-align:right}
+.quest-check{font-size:18px;flex-shrink:0}
+body.theme-light .quest-item .quest-core{background:rgba(0,0,0,0.04)}
+body.theme-light .quest-item.done .quest-core{background:linear-gradient(145deg,rgba(255,204,0,0.12),rgba(255,107,53,0.07))}
+
+/* ── ONBOARDING ── */
+#screen-onboard{background:var(--bg);overflow:hidden}
+#ob-skip{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;z-index:10;font-size:12px;color:var(--text2);font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:6px 10px;background:var(--glass);border:0.5px solid var(--gb);border-radius:12px}
+#ob-dots{position:absolute;bottom:max(28px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10}
+.ob-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.25);transition:background 250ms ease,width 250ms ease}
+body.theme-light .ob-dot{background:rgba(0,0,0,0.18)}
+.ob-dot.active{width:20px;border-radius:3px;background:var(--accent)}
+
+/* Slides wrapper */
+#ob-slides{display:flex;height:100%;transition:transform 380ms var(--ease-drawer);will-change:transform}
+.ob-slide{min-width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;padding-top:max(60px,env(safe-area-inset-top));padding-bottom:80px;text-align:center;gap:0;position:relative}
+
+/* Step 1 — Welcome */
+#ob-avatar-big{font-size:72px;line-height:1;animation:obBounce 600ms var(--ease-out) forwards;opacity:0}
+@keyframes obBounce{0%{opacity:0;transform:scale(0.3) rotate(-10deg)}60%{opacity:1;transform:scale(1.15) rotate(3deg)}80%{transform:scale(0.95) rotate(-1deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+#ob-welcome-nick{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;margin-top:20px;background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#ob-welcome-sub{font-size:14px;color:var(--text2);margin-top:8px;line-height:1.5}
+
+/* Step 2 — Demo game */
+#ob-demo-grid{display:grid;grid-template-columns:repeat(2,64px);grid-template-rows:repeat(3,64px);gap:10px;margin:0 auto 24px}
+.ob-card{border-radius:12px;background:var(--glass);border:1.5px solid var(--gb);display:flex;align-items:center;justify-content:center;font-size:28px;transition:transform 250ms var(--ease-out),background 250ms ease}
+body.theme-light .ob-card{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.12)}
+.ob-card.flipped{background:rgba(255,204,0,0.12);border-color:rgba(255,204,0,0.5)}
+.ob-card.matched{animation:obMatch 280ms var(--ease-out) forwards}
+@keyframes obMatch{0%{transform:scale(1.12);opacity:1}100%{transform:scale(0);opacity:0}}
+.ob-title{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
+.ob-sub{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5;max-width:280px}
+
+/* Step 3 — Prize */
+#ob-prize-cover{width:120px;height:120px;border-radius:18px;object-fit:cover;border:2px solid rgba(255,204,0,0.4);box-shadow:0 0 30px rgba(255,204,0,0.2);margin-bottom:12px;opacity:0;transform:scale(0.8);transition:opacity 400ms var(--ease-out),transform 400ms var(--ease-out)}
+#ob-prize-cover.show{opacity:1;transform:scale(1)}
+#ob-gift-anim{font-size:56px;animation:giftPulse 2s ease-in-out infinite;margin-bottom:8px}
+
+/* Step 4 — Quests */
+#ob-quests-preview{display:flex;flex-direction:column;gap:8px;width:100%;margin-bottom:20px}
+.ob-quest-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:var(--glass);border:0.5px solid var(--gb);text-align:left}
+body.theme-light .ob-quest-row{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.08)}
+.ob-quest-icon{font-size:22px;flex-shrink:0}
+.ob-quest-text{flex:1;min-width:0}
+.ob-quest-name{font-size:12px;font-weight:700;color:var(--text)}
+.ob-quest-rank{font-size:10px;color:var(--accent);font-weight:600;margin-top:2px;font-family:'Unbounded',sans-serif}
+
+/* Step 5 — Level map hint */
+#ob-lmap-preview{width:100%;border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(255,204,0,0.6),rgba(255,107,53,0.4));margin-bottom:16px;animation:obGlow 2s ease-in-out infinite}
+@keyframes obGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,204,0,0.3)}50%{box-shadow:0 0 20px 4px rgba(255,204,0,0.25)}}
+#ob-lmap-inner{border-radius:calc(18px - 1.5px);background:var(--glass);box-shadow:inset 0 1px 0 var(--gs);padding:14px;display:flex;align-items:center;gap:12px}
+body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
+#ob-lmap-cover{width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0}
+#ob-lmap-info{flex:1;text-align:left}
+#ob-lmap-level{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-weight:600}
+#ob-lmap-artist{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--text)}
+#ob-lmap-title-text{font-size:11px;color:var(--text2)}
+#ob-tooltip{background:linear-gradient(120deg,var(--accent),#FF9500);border-radius:12px;padding:8px 14px;font-size:12px;font-weight:700;color:#080810;margin-bottom:8px;animation:obFloat 2s ease-in-out infinite}
+@keyframes obFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* CTA button */
+.ob-btn{margin-top:20px;padding:14px 32px;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out);width:100%}
+.ob-btn:active{transform:scale(0.97);opacity:0.85}
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){.screen,.card-inner,.win-btn,.lmap-card{transition:opacity 150ms ease!important;transform:none!important;animation:none!important}.card.matched{opacity:0!important}#gift-btn{animation:none!important}}
 </style>
@@ -409,6 +489,101 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
     <img src="assets/zm.png" alt="Zhara Music">
     <img src="assets/lm.png" alt="Lotus Music">
     <img src="assets/ovo.png" alt="Ovokacho">
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="screen-onboard" class="screen">
+  <div id="ob-skip" onclick="Onboard.finish()">Пропустить</div>
+
+  <div id="ob-slides">
+    <!-- Slide 1: Welcome -->
+    <div class="ob-slide">
+      <div id="ob-avatar-big">🎮</div>
+      <div id="ob-welcome-nick">Привет!</div>
+      <div id="ob-welcome-sub">Добро пожаловать<br>в Mirazh</div>
+    </div>
+
+    <!-- Slide 2: How to play -->
+    <div class="ob-slide">
+      <div id="ob-demo-grid">
+        <div class="ob-card" id="obc-0"></div>
+        <div class="ob-card" id="obc-1"></div>
+        <div class="ob-card" id="obc-2"></div>
+        <div class="ob-card" id="obc-3"></div>
+        <div class="ob-card" id="obc-4"></div>
+        <div class="ob-card" id="obc-5"></div>
+      </div>
+      <div class="ob-title">Открывай пары</div>
+      <div class="ob-sub">Найди одинаковые карточки — и переходи к следующему уровню</div>
+      <button class="ob-btn" onclick="Onboard.next()">Понял →</button>
+    </div>
+
+    <!-- Slide 3: Prize -->
+    <div class="ob-slide">
+      <div id="ob-gift-anim">🎁</div>
+      <img id="ob-prize-cover" src="" alt="">
+      <div class="ob-title">Выигрывай треки</div>
+      <div class="ob-sub">За каждый пройденный уровень — эксклюзивный рилз и ссылки на стриминги</div>
+      <button class="ob-btn" onclick="Onboard.next()">Хочу! →</button>
+    </div>
+
+    <!-- Slide 4: Quests -->
+    <div class="ob-slide">
+      <div id="ob-quests-preview">
+        <div class="ob-quest-row">
+          <div class="ob-quest-icon">🎮</div>
+          <div class="ob-quest-text">
+            <div class="ob-quest-name">Первый шаг — пройти первый уровень</div>
+            <div class="ob-quest-rank">Ранг: 🎮 Игрок</div>
+          </div>
+        </div>
+        <div class="ob-quest-row">
+          <div class="ob-quest-icon">🎵</div>
+          <div class="ob-quest-text">
+            <div class="ob-quest-name">Меломан — посмотреть 3 рилза</div>
+            <div class="ob-quest-rank">Ранг: 🎵 Меломан</div>
+          </div>
+        </div>
+        <div class="ob-quest-row">
+          <div class="ob-quest-icon">👑</div>
+          <div class="ob-quest-text">
+            <div class="ob-quest-name">Легенда — выполнить все задания</div>
+            <div class="ob-quest-rank">Ранг: 👑 Легенда</div>
+          </div>
+        </div>
+      </div>
+      <div class="ob-title">Выполняй задания</div>
+      <div class="ob-sub">Зарабатывай ранги и становись легендой Mirazh</div>
+      <button class="ob-btn" onclick="Onboard.next()">Дальше →</button>
+    </div>
+
+    <!-- Slide 5: Level map -->
+    <div class="ob-slide">
+      <div id="ob-tooltip">Начни здесь 👆</div>
+      <div id="ob-lmap-preview">
+        <div id="ob-lmap-inner">
+          <img id="ob-lmap-cover" src="" alt="">
+          <div id="ob-lmap-info">
+            <div id="ob-lmap-level">Уровень 1 · 4 карточки</div>
+            <div id="ob-lmap-artist">—</div>
+            <div id="ob-lmap-title-text">—</div>
+          </div>
+          <div style="font-size:20px">▶</div>
+        </div>
+      </div>
+      <div class="ob-title">Твой первый уровень</div>
+      <div class="ob-sub">Карта уровней ждёт тебя на главном экране</div>
+      <button class="ob-btn" style="background:linear-gradient(120deg,var(--accent),#FF9500)" onclick="Onboard.finish()">Начать играть! 🚀</button>
+    </div>
+  </div>
+
+  <div id="ob-dots">
+    <div class="ob-dot active"></div>
+    <div class="ob-dot"></div>
+    <div class="ob-dot"></div>
+    <div class="ob-dot"></div>
+    <div class="ob-dot"></div>
   </div>
 </div>
 
@@ -520,11 +695,11 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         Поделиться
       </button>
-      <a id="btn-yandex"  class="win-btn btn-yandex hidden"  target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.572 2C9.428 2 7 4.258 7 8.192c0 2.84 1.388 4.755 3.87 5.734L7.1 22h3.045l3.573-7.638h.024V22H16.5V2h-2.928zm0 9.98h-.78V4.34h.78c1.868 0 2.844 1.15 2.844 3.748 0 2.61-.976 3.892-2.844 3.892z"/></svg>Яндекс</a>
+      <a id="btn-yandex" class="win-btn btn-yandex hidden" onclick="QuestCounters.inc('mq_streams')"  target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.572 2C9.428 2 7 4.258 7 8.192c0 2.84 1.388 4.755 3.87 5.734L7.1 22h3.045l3.573-7.638h.024V22H16.5V2h-2.928zm0 9.98h-.78V4.34h.78c1.868 0 2.844 1.15 2.844 3.748 0 2.61-.976 3.892-2.844 3.892z"/></svg>Яндекс</a>
       <a id="btn-vk"      class="win-btn btn-vk hidden"       target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.898 7.67c.13-.43 0-.75-.614-.75h-2.032c-.517 0-.755.273-.885.574 0 0-1.033 2.517-2.496 4.15-.473.474-.688.624-.946.624-.13 0-.317-.15-.317-.58V7.67c0-.516-.15-.75-.58-.75H10.3c-.322 0-.516.24-.516.467 0 .49.731.603.806 1.983v2.994c0 .655-.118.773-.376.773-.688 0-2.363-2.529-3.356-5.422C6.664 7.13 6.47 6.92 5.95 6.92H3.917c-.58 0-.696.273-.696.574 0 .537.688 3.196 3.205 6.715 1.678 2.408 4.04 3.714 6.19 3.714 1.29 0 1.45-.29 1.45-.79v-1.827c0-.58.122-.695.53-.695.3 0 .817.15 2.022 1.312 1.377 1.377 1.604 1.994 2.378 1.994h2.033c.58 0 .87-.29.703-.861-.183-.57-.84-1.396-1.72-2.376-.473-.559-1.183-1.162-1.398-1.462-.3-.387-.215-.559 0-.904 0 0 2.473-3.476 2.731-4.658z"/></svg>ВК</a>
       <a id="btn-zvuk"    class="win-btn btn-zvuk hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 14.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9zm0-7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>Звук</a>
       <a id="btn-kion"    class="win-btn btn-kion hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>КИОН</a>
-      <a id="btn-spotify" class="win-btn btn-spotify hidden" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 0 1-.277-1.215c3.809-.87 7.076-.496 9.712 1.115a.623.623 0 0 1 .207.857zm1.223-2.722a.78.78 0 0 1-1.072.257C14.1 12.14 10.539 11.67 7.2 12.656a.78.78 0 0 1-.434-1.495c3.787-1.1 8.003-.567 10.786 1.069a.78.78 0 0 1 .257 1.072zm.105-2.835C15.12 9.174 10.39 9.013 7.2 9.97a.936.936 0 1 1-.543-1.79c3.655-1.11 9.038-.896 12.602 1.232a.935.935 0 0 1-.345 1.455z"/></svg>Spotify</a>
+      <a id="btn-spotify" class="win-btn btn-spotify hidden" onclick="QuestCounters.inc('mq_streams')" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 0 1-.277-1.215c3.809-.87 7.076-.496 9.712 1.115a.623.623 0 0 1 .207.857zm1.223-2.722a.78.78 0 0 1-1.072.257C14.1 12.14 10.539 11.67 7.2 12.656a.78.78 0 0 1-.434-1.495c3.787-1.1 8.003-.567 10.786 1.069a.78.78 0 0 1 .257 1.072zm.105-2.835C15.12 9.174 10.39 9.013 7.2 9.97a.936.936 0 1 1-.543-1.79c3.655-1.11 9.038-.896 12.602 1.232a.935.935 0 0 1-.345 1.455z"/></svg>Spotify</a>
       <a id="btn-apple"   class="win-btn btn-apple hidden"   target="_blank"><svg width="13" height="14" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.8 135.4-317.9 269-317.9 100.6 0 164.4 55.8 220.3 55.8 53.3 0 127.3-58.8 238.3-58.8zm-111-192.9c50.7-60.2 86.4-144.1 86.4-228 0-11.1-.6-22.3-2.6-31.4-82.6 3.2-180.9 55.2-239.6 125.7-45.5 52.7-88.9 136.6-88.9 221.9 0 12.3 2 24.6 3.2 28.5 5.2.6 13.6 1.9 22 1.9 73.9 0 165.4-49.4 219.5-118.6z"/></svg>Apple</a>
     </div>
   </div>
@@ -562,23 +737,14 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
     <div id="prof-edit-btn" onclick="App.goToEdit()">✏️ Изменить</div>
   </div>
   <div id="prof-tabs">
-    <div class="prof-tab active" onclick="App.switchTab('stats')">Статистика</div>
+    <div class="prof-tab active" onclick="App.switchTab('quests')">Задания</div>
     <div class="prof-tab" onclick="App.switchTab('rating')">Рейтинг</div>
     <div class="prof-tab" onclick="App.switchTab('collection')">Коллекция</div>
   </div>
   <div id="prof-content">
-    <div id="prof-stats" class="prof-section show">
-      <div class="prof-label">Рекорды</div>
-      <div id="prof-records">
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">4 карточки</div><div id="rec-4" class="rec-val">—</div><div id="rec-4s" class="rec-sub"></div></div></div>
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">8 карточек</div><div id="rec-8" class="rec-val">—</div><div id="rec-8s" class="rec-sub"></div></div></div>
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">12 карточек</div><div id="rec-12" class="rec-val">—</div><div id="rec-12s" class="rec-sub"></div></div></div>
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">16 карточек</div><div id="rec-16" class="rec-val">—</div><div id="rec-16s" class="rec-sub"></div></div></div>
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">24 карточки</div><div id="rec-24" class="rec-val">—</div><div id="rec-24s" class="rec-sub"></div></div></div>
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">36 карточек</div><div id="rec-36" class="rec-val">—</div><div id="rec-36s" class="rec-sub"></div></div></div>
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">48 карточек</div><div id="rec-48" class="rec-val">—</div><div id="rec-48s" class="rec-sub"></div></div></div>
-        <div class="rec-shell"><div class="rec-core"><div class="rec-diff">64 карточки</div><div id="rec-64" class="rec-val">—</div><div id="rec-64s" class="rec-sub"></div></div></div>
-      </div>
+    <div id="prof-quests-tab" class="prof-section show">
+      <div class="prof-label" style="margin-top:12px">Твои задания</div>
+      <div id="prof-quests"></div>
     </div>
     <div id="prof-rating" class="prof-section">
       <div class="prof-label">Топ игроков</div>
@@ -758,6 +924,81 @@ const Collection = {
 
 // Nickname
 
+const QuestCounters = {
+  inc(key, by=1){ try{ const v=(parseInt(localStorage.getItem(key)||'0'))+by; localStorage.setItem(key,v); return v; }catch(e){return 0;} },
+  get(key){ try{ return parseInt(localStorage.getItem(key)||'0'); }catch(e){return 0;} },
+  flag(key){ try{ localStorage.setItem(key,'1'); }catch(e){} },
+  hasFlag(key){ try{ return localStorage.getItem(key)==='1'; }catch(e){return false;} },
+};
+
+const QUESTS = [
+  {
+    id:'first_level', icon:'🎮', name:'Первый шаг',
+    desc:'Пройти первый уровень', rank:'🎮 Игрок',
+    check(){ return !!(Progress.getLevel(PLAYLISTS[0].id,0)?.completed); },
+    progress(){ return {cur:Progress.getLevel(PLAYLISTS[0].id,0)?.completed?1:0, max:1}; },
+  },
+  {
+    id:'melomania', icon:'🎵', name:'Меломан',
+    desc:'Посмотреть 3 рилза', rank:'🎵 Меломан',
+    check(){ return QuestCounters.get('mq_reels')>=3; },
+    progress(){ return {cur:Math.min(QuestCounters.get('mq_reels'),3), max:3}; },
+  },
+  {
+    id:'collector', icon:'💿', name:'Коллекционер',
+    desc:'Открыть 5 треков', rank:'💿 Коллекционер',
+    check(){ return Collection.get().length>=5; },
+    progress(){ return {cur:Math.min(Collection.get().length,5), max:5}; },
+  },
+  {
+    id:'streamer', icon:'🎧', name:'Переходи слушать',
+    desc:'Перейти по ссылке на стриминг 5 раз', rank:'🎧 Стример',
+    check(){ return QuestCounters.get('mq_streams')>=5; },
+    progress(){ return {cur:Math.min(QuestCounters.get('mq_streams'),5), max:5}; },
+  },
+  {
+    id:'star_player', icon:'⭐', name:'Звёздный игрок',
+    desc:'Получить 3 звезды на любом уровне трижды', rank:'⭐ Звёздный',
+    check(){ return QuestCounters.get('mq_perfect')>=3; },
+    progress(){ return {cur:Math.min(QuestCounters.get('mq_perfect'),3), max:3}; },
+  },
+  {
+    id:'perfectionist', icon:'🏅', name:'Перфекционист',
+    desc:'Пройти 4 уровня плейлиста', rank:'🏅 Перфекционист',
+    check(){ return Progress.playlistProgress(PLAYLISTS[0].id).done>=4; },
+    progress(){ return {cur:Math.min(Progress.playlistProgress(PLAYLISTS[0].id).done,4), max:4}; },
+  },
+  {
+    id:'stylist', icon:'🎨', name:'Меняю стиль',
+    desc:'Поменять аватар', rank:'🎨 Стилист',
+    check(){ return QuestCounters.hasFlag('mq_avatar'); },
+    progress(){ return {cur:QuestCounters.hasFlag('mq_avatar')?1:0, max:1}; },
+  },
+  {
+    id:'marathoner', icon:'🔥', name:'Марафонец',
+    desc:'Сыграть 10 игр', rank:'🔥 Марафонец',
+    check(){ return QuestCounters.get('mq_games')>=10; },
+    progress(){ return {cur:Math.min(QuestCounters.get('mq_games'),10), max:10}; },
+  },
+  {
+    id:'half_way', icon:'🚀', name:'Первопроходец',
+    desc:'Пройти все 8 уровней плейлиста', rank:'🚀 Первопроходец',
+    check(){ return Progress.playlistProgress(PLAYLISTS[0].id).done>=8; },
+    progress(){ const d=Progress.playlistProgress(PLAYLISTS[0].id).done; return {cur:Math.min(d,8), max:8}; },
+  },
+  {
+    id:'legend', icon:'👑', name:'Легенда Mirazh',
+    desc:'Получить все остальные ранги', rank:'👑 Легенда',
+    check(){
+      return QUESTS.slice(0,9).every(q=>q.check());
+    },
+    progress(){
+      const done=QUESTS.slice(0,9).filter(q=>q.check()).length;
+      return {cur:done, max:9};
+    },
+  },
+];
+
 const EXTRA_PLAYLISTS = [
   {id:'vol_2',name:'Mirazh Vol. 2',emoji:'🔥',soon:true},
   {id:'vol_3',name:'Rap Edition',emoji:'🎤',soon:true},
@@ -855,7 +1096,7 @@ const state={
   fromProfile: false,
   cards:[],flipped:[],matched:0,moves:0,lock:false,
   finalTime:0,finalMoves:0,
-  profileTab:'stats',
+  profileTab:'quests',
 };
 
 // ═══════════════════════════════════════
@@ -867,7 +1108,7 @@ function showScreen(id){
   state.screen=id;
   if(id==='home') renderHome();
   if(id==='levelmap') renderLevelMap();
-  if(id==='profile') renderProfile();
+  if(id==='profile'){ renderProfile(); renderQuests(); }
 }
 
 // ═══════════════════════════════════════
@@ -904,8 +1145,11 @@ function runSplash(){
     },200);
     // Go to next screen
     setTimeout(()=>{
-      if(Nick.exists()){ showScreen('home'); }
-      else showScreen('nickname');
+      if(Nick.exists()){
+        const onboarded=localStorage.getItem('mirazh_onboarded');
+        if(!onboarded){ Onboard.start(); }
+        else { showScreen('home'); }
+      } else { showScreen('nickname'); }
     },1200);
   });
 }
@@ -1096,6 +1340,7 @@ function initGame(){
   const pairs=n/2;
   state.cards=shuffle([...EMOJIS_USE.slice(0,pairs),...EMOJIS_USE.slice(0,pairs)]);
   Timer.reset(); Timer.start();
+  QuestCounters.inc('mq_games');
   renderGrid();
 }
 
@@ -1153,6 +1398,7 @@ function onGameWon(){
   const lvl=state.currentLevel;
   const pairs=lvl.cards/2;
   const stars=calcStars(state.finalMoves,pairs);
+  if(stars===3) QuestCounters.inc('mq_perfect');
   const plId=state.currentPlaylistId;
   const isRecord=Progress.setLevel(plId,state.currentLevelIndex,stars,state.finalMoves,state.finalTime);
   const recUpd=Records.update(lvl.cards,state.finalMoves,state.finalTime);
@@ -1255,6 +1501,34 @@ function stopWinVideo(){
 // ═══════════════════════════════════════
 // PROFILE
 // ═══════════════════════════════════════
+function renderQuests(){
+  const container=document.getElementById('prof-quests');
+  if(!container) return;
+  container.innerHTML='';
+  QUESTS.forEach(q=>{
+    const done=q.check();
+    const {cur,max}=q.progress();
+    const pct=Math.round(cur/max*100);
+    const item=document.createElement('div');
+    item.className='quest-item'+(done?' done':'');
+    item.innerHTML=`
+      <div class="quest-core">
+        <div class="quest-icon">${q.icon}</div>
+        <div class="quest-info">
+          <div class="quest-name">${q.name}</div>
+          <div class="quest-desc">${q.desc}</div>
+          <div class="quest-rank">${done?'✓ '+q.rank:'Ранг: '+q.rank}</div>
+          ${!done?`<div class="quest-progress">
+            <div class="quest-bar"><div class="quest-bar-fill" style="width:${pct}%"></div></div>
+            <div class="quest-pct">${cur}/${max}</div>
+          </div>`:''}
+        </div>
+        <div class="quest-check">${done?'✅':''}</div>
+      </div>`;
+    container.appendChild(item);
+  });
+}
+
 function renderProfile(){
   const nick=Nick.get();
   const avatar=Nick.getAvatar();
@@ -1367,7 +1641,7 @@ const App = {
     const newNick=document.getElementById('edit-nick-input').value.trim();
     const sel=document.querySelector('#edit-emoji-grid .ep-btn.selected');
     if(newNick.length>=2) Nick.set(newNick);
-    if(sel) Nick.setAvatar(sel.dataset.emoji);
+    if(sel){ Nick.setAvatar(sel.dataset.emoji); QuestCounters.flag('mq_avatar'); }
     showScreen('profile');
     renderProfile();
     document.getElementById('home-nickname').textContent=Nick.get();
@@ -1400,6 +1674,7 @@ const App = {
   },
 
   openPrize(){
+    QuestCounters.inc('mq_reels');
     try{ getACtx().resume(); }catch(e){}
     showScreen('win');
     setupWinScreen();
@@ -1434,13 +1709,113 @@ const App = {
   switchTab(tab){
     state.profileTab=tab;
     document.querySelectorAll('.prof-tab').forEach((t,i)=>{
-      const tabs=['stats','rating','collection'];
+      const tabs=['quests','rating','collection'];
       t.classList.toggle('active',tabs[i]===tab);
     });
-    document.getElementById('prof-stats').classList.toggle('show',tab==='stats');
+    document.getElementById('prof-quests-tab').classList.toggle('show',tab==='quests');
     document.getElementById('prof-rating').classList.toggle('show',tab==='rating');
     document.getElementById('prof-collection-tab').classList.toggle('show',tab==='collection');
+    if(tab==='quests') renderQuests();
     if(tab==='rating') renderProfile();
+  },
+};
+
+// ═══════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════
+const Onboard = {
+  _step: 0,
+  _demoTimer: null,
+  _total: 5,
+
+  start() {
+    this._step = 0;
+    // Fill dynamic content
+    const avatar = Nick.getAvatar();
+    const nick = Nick.get();
+    document.getElementById('ob-avatar-big').textContent = avatar;
+    document.getElementById('ob-avatar-big').style.animation = 'none';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.getElementById('ob-avatar-big').style.animation = '';
+      });
+    });
+    document.getElementById('ob-welcome-nick').textContent = 'Привет, ' + nick + '!';
+
+    // Fill level 1 info
+    const lvl0 = PLAYLISTS[0].levels[0];
+    document.getElementById('ob-prize-cover').src = lvl0.cover;
+    document.getElementById('ob-lmap-cover').src = lvl0.cover;
+    document.getElementById('ob-lmap-artist').textContent = lvl0.artist;
+    document.getElementById('ob-lmap-title-text').textContent = lvl0.title;
+
+    showScreen('onboard');
+    this._goTo(0);
+  },
+
+  _goTo(step) {
+    this._step = step;
+    // Slide
+    const slides = document.getElementById('ob-slides');
+    if (slides) slides.style.transform = `translateX(-${step * 100}%)`;
+    // Dots
+    document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('active', i === step));
+    // Step-specific init
+    if (step === 0) this._initStep1();
+    if (step === 1) this._initStep2();
+    if (step === 2) this._initStep3();
+  },
+
+  _initStep1() {
+    // Auto advance after 2s
+    setTimeout(() => { if (this._step === 0) this.next(); }, 2000);
+  },
+
+  _initStep2() {
+    // Live demo: pairs [0,3]=🎵  [1,4]=🎸  [2,5]=🎤
+    const PAIRS = ['🎵','🎸','🎤','🎵','🎸','🎤'];
+    const cards = Array.from({length:6}, (_,i) => document.getElementById('obc-'+i));
+    // Reset
+    cards.forEach(c => { c.classList.remove('flipped','matched'); c.textContent = ''; });
+    const demo = [[0,3],[1,4],[2,5]];
+    let si = 0;
+    const runPair = () => {
+      if (this._step !== 1) return;
+      if (si >= demo.length) { setTimeout(() => { cards.forEach(c=>{c.classList.remove('flipped','matched');c.textContent='';}); si=0; setTimeout(runPair,400); }, 600); return; }
+      const [a,b] = demo[si++];
+      cards[a].textContent = PAIRS[a]; cards[a].classList.add('flipped');
+      setTimeout(() => {
+        if(this._step!==1) return;
+        cards[b].textContent = PAIRS[b]; cards[b].classList.add('flipped');
+        setTimeout(() => {
+          if(this._step!==1) return;
+          cards[a].classList.add('matched'); cards[b].classList.add('matched');
+          setTimeout(runPair, 500);
+        }, 600);
+      }, 400);
+    };
+    clearTimeout(this._demoTimer);
+    setTimeout(runPair, 500);
+  },
+
+  _initStep3() {
+    // Animate prize cover
+    const cover = document.getElementById('ob-prize-cover');
+    cover.classList.remove('show');
+    setTimeout(() => cover.classList.add('show'), 300);
+  },
+
+  next() {
+    if (this._step < this._total - 1) {
+      this._goTo(this._step + 1);
+    } else {
+      this.finish();
+    }
+  },
+
+  finish() {
+    try { localStorage.setItem('mirazh_onboarded', '1'); } catch(e) {}
+    showScreen('home');
   },
 };
 
