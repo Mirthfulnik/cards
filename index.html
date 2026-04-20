@@ -1964,10 +1964,18 @@ const App = {
   },
 
   saveProfileEdit(){
+    const oldNick=Nick.get();
     const newNick=document.getElementById('edit-nick-input').value.trim();
     const sel=document.querySelector('#edit-emoji-grid .ep-btn.selected');
+    const nickChanged=newNick.length>=2 && newNick!==oldNick;
+    // Delete old Firebase record before changing nick (prevent duplicates)
+    if(nickChanged){
+      try{ db.ref('ratings/'+oldNick.replace(/[.#$[\]]/g,'_')).remove(); }catch(e){}
+    }
     if(newNick.length>=2) Nick.set(newNick);
     if(sel){ Nick.setAvatar(sel.dataset.emoji); QuestCounters.flag('mq_avatar'); }
+    // Push updated record (new nick or new avatar)
+    fbPushScore();
     showScreen('profile');
     renderProfile(); renderQuests(); renderRating(); renderCollection();
     document.getElementById('home-nickname').textContent=Nick.get();
@@ -2043,7 +2051,7 @@ const App = {
 
   share(){
     const lvl=state.currentLevel;
-    const text=`Смотри! Супер-трек «${lvl.artist} — ${lvl.title}» в игре Mirazh 🎴`;
+    const text=`Я нашёл трек «${lvl.artist} — ${lvl.title}» в игре Mirazh 🎴`;
     const url=window.location.href;
     if(navigator.share){ navigator.share({text,url}).catch(()=>{}); }
     else{ navigator.clipboard.writeText(`${text}\n${url}`).then(()=>alert('Скопировано!')).catch(()=>{}); }
