@@ -2043,7 +2043,7 @@ const App = {
 
   share(){
     const lvl=state.currentLevel;
-    const text=`Я нашёл трек «${lvl.artist} — ${lvl.title}» в игре Mirazh 🎴`;
+    const text=`Смотри! Супер-трек «${lvl.artist} — ${lvl.title}» в игре Mirazh 🎴`;
     const url=window.location.href;
     if(navigator.share){ navigator.share({text,url}).catch(()=>{}); }
     else{ navigator.clipboard.writeText(`${text}\n${url}`).then(()=>alert('Скопировано!')).catch(()=>{}); }
