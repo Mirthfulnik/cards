@@ -963,19 +963,33 @@ function fbGetRating(callback){
 // ═══════════════════════════════════════
 // AUDIO ENGINE
 // ═══════════════════════════════════════
+// ═══════════════════════════════════════
+// AUDIO ENGINE (Safari WebKit compatible)
+// Rule: AudioContext.resume() must be called SYNCHRONOUSLY
+// inside the user gesture handler — no .then() chains
+// ═══════════════════════════════════════
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let _actx = null;
-function getACtx(){ if(!_actx) _actx=new AudioCtx(); return _actx; }
 
-function playTone(freq,type,dur,vol=0.15,delay=0){
+function _getCtx(){
+  if(!_actx){ try{ _actx = new AudioCtx(); }catch(e){ return null; } }
+  // SYNCHRONOUSLY resume — Safari requires this in the gesture stack
+  if(_actx.state === 'suspended'){ try{ _actx.resume(); }catch(e){} }
+  return _actx;
+}
+
+function playTone(freq, type, dur, vol=0.15, delay=0){
   try{
-    const ctx=getACtx(),osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.connect(gain);gain.connect(ctx.destination);
-    osc.type=type;osc.frequency.setValueAtTime(freq,ctx.currentTime+delay);
-    gain.gain.setValueAtTime(0.001,ctx.currentTime+delay);
-    gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+delay+0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+dur);
-    osc.start(ctx.currentTime+delay);osc.stop(ctx.currentTime+delay+dur+0.05);
+    const ctx = _getCtx(); if(!ctx) return;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
+    gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + dur);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + dur + 0.05);
   }catch(e){}
 }
 
@@ -988,7 +1002,6 @@ const SFX = {
   },
   error(){ playTone(200,'sawtooth',0.12,0.08); },
   win(){
-    try{ getACtx().resume(); }catch(e){}
     playTone(130,'sine',0.4,0.18,0);
     [523,659,784].forEach(f=>playTone(f,'sine',0.5,0.12,0.05));
     [523,587,659,698,784,880,988,1047].forEach((f,i)=>playTone(f,'sine',0.25,0.11,0.2+i*0.07));
@@ -996,52 +1009,52 @@ const SFX = {
   }
 };
 
-// BG MUSIC — generative A-minor arpeggion
-let _bgNodes = [], _bgMuted = true, _bgStarted = false;
-const BG_NOTES = [220,261.63,329.63,392,329.63,261.63]; // A3 C4 E4 G4 E4 C4
+// BG MUSIC — generative A-minor arpeggio
+let _bgMuted = true;     // off by default (Safari policy)
+let _bgStarted = false;  // AudioContext unlocked by user gesture?
+let _bgPaused = false;   // paused while video plays?
 let _bgStep = 0, _bgTimeout = null;
+const BG_NOTES = [220, 261.63, 329.63, 392, 329.63, 261.63];
 
-function bgTick(){
-  if(_bgMuted){ _bgTimeout=setTimeout(bgTick,400); return; }
+function _bgTick(){
+  clearTimeout(_bgTimeout);
+  _bgTimeout = null;
+  if(_bgMuted || _bgPaused) return;
   try{
-    const ctx=getACtx();
-    // Safari: if context suspended, try to resume and retry
-    if(ctx.state === 'suspended'){
-      ctx.resume().then(()=>{ _bgTimeout=setTimeout(bgTick,100); }).catch(()=>{});
-      return;
-    }
-    const osc=ctx.createOscillator(),gain=ctx.createGain();
-    const filter=ctx.createBiquadFilter();
-    filter.type='lowpass';filter.frequency.value=1200;
-    osc.connect(filter);filter.connect(gain);gain.connect(ctx.destination);
-    osc.type='sine';
-    osc.frequency.setValueAtTime(BG_NOTES[_bgStep],ctx.currentTime);
-    gain.gain.setValueAtTime(0,ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.05,ctx.currentTime+0.05);
-    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35);
-    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.4);
-    _bgStep=(_bgStep+1)%BG_NOTES.length;
+    const ctx = _getCtx(); if(!ctx || ctx.state !== 'running') return;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = 1200;
+    osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(BG_NOTES[_bgStep], ctx.currentTime);
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
+    _bgStep = (_bgStep + 1) % BG_NOTES.length;
   }catch(e){}
-  _bgTimeout=setTimeout(bgTick,350);
+  _bgTimeout = setTimeout(_bgTick, 350);
 }
 
-function startBgMusic(){
+// Call SYNCHRONOUSLY inside a user gesture to unlock + start
+function _bgUnlockAndStart(){
   if(_bgStarted) return;
-  _bgStarted=true;
-  // Safari requires resume() inside a user gesture
-  // We hook into the first touch/click on the document
-  function unlockAndStart(){
-    document.removeEventListener('touchstart', unlockAndStart, true);
-    document.removeEventListener('click', unlockAndStart, true);
-    try{ getACtx().resume().then(()=>bgTick()).catch(()=>bgTick()); }catch(e){ bgTick(); }
-  }
-  // If AudioContext already running (e.g. user already tapped SFX), start immediately
-  if(_actx && _actx.state === 'running'){
-    bgTick();
-  } else {
-    document.addEventListener('touchstart', unlockAndStart, true);
-    document.addEventListener('click', unlockAndStart, true);
-  }
+  _bgStarted = true;
+  _getCtx(); // creates + synchronously resumes AudioContext
+  if(!_bgMuted && !_bgPaused) _bgTick();
+}
+
+// Pause bg music (when video starts)
+function bgPause(){
+  _bgPaused = true;
+  clearTimeout(_bgTimeout); _bgTimeout = null;
+}
+
+// Resume bg music (when video ends/exits)
+function bgResume(){
+  _bgPaused = false;
+  if(_bgStarted && !_bgMuted) _bgTick();
 }
 
 // ═══════════════════════════════════════
@@ -1565,7 +1578,7 @@ function getCardEl(i){ return document.querySelector(`.card[data-idx="${i}"]`); 
 
 function onCardClick(i,el){
   if(state.lock||el.classList.contains('flipped')||el.classList.contains('matched')) return;
-  try{ getACtx().resume(); }catch(e){}
+  
   SFX.flip();
   el.classList.add('flipped'); state.flipped.push(i);
   if(state.flipped.length===2){
@@ -1699,6 +1712,7 @@ function stopWinVideo(){
   const vid=document.getElementById('win-video'); vid.pause(); vid.currentTime=0;
   document.getElementById('win-mini-bar').classList.remove('show');
   document.getElementById('win-track-reveal').classList.remove('show');
+  bgResume(); // restore bg music after video
 }
 
 // ═══════════════════════════════════════
@@ -1833,7 +1847,7 @@ function renderCollection(){
   coll.forEach(t=>{
     const item=document.createElement('div'); item.className='coll-item';
     item.innerHTML=`<img class="coll-cover" src="${t.cover}" alt=""><div class="coll-info"><div class="coll-artist">${t.artist}</div><div class="coll-title">${t.title}</div></div><div class="coll-play">▶</div>`;
-    item.addEventListener('click',()=>{ state.fromProfile=true; state.currentLevel=t; showScreen('win'); setupWinScreen(); });
+    item.addEventListener('click',()=>{ state.fromProfile=true; state.currentLevel=t; bgPause(); showScreen('win'); setupWinScreen(); });
     collEl.appendChild(item);
   });
 }
@@ -1942,49 +1956,35 @@ const App = {
   },
 
   toggleMute(){
-    // Toggle mute state
+    // SYNCHRONOUS — must stay in gesture call stack for Safari
     _bgMuted = !_bgMuted;
-
-    if(!_bgMuted && !_bgStarted){
-      // User wants music ON and it was never started — start now (user gesture!)
-      _bgStarted = true;
-      try{
-        const ctx=getACtx();
-        (ctx.state==='suspended'?ctx.resume():Promise.resolve())
-          .then(()=>bgTick()).catch(()=>bgTick());
-      }catch(e){ bgTick(); }
-    } else if(!_bgMuted && _bgStarted){
-      // Was muted, now unmuting — resume if needed
-      try{
-        const ctx=getACtx();
-        (ctx.state==='suspended'?ctx.resume():Promise.resolve())
-          .then(()=>{ if(_bgTimeout===null) bgTick(); }).catch(()=>{});
-      }catch(e){ if(_bgTimeout===null) bgTick(); }
+    if(!_bgMuted){
+      // Turning ON: unlock AudioContext + start loop
+      _bgUnlockAndStart();
+      if(_bgStarted && !_bgPaused && _bgTimeout === null) _bgTick();
+    } else {
+      // Turning OFF: stop loop
+      clearTimeout(_bgTimeout); _bgTimeout = null;
     }
     // Sync UI
-    const muted=_bgMuted;
-    const btn=document.getElementById('mute-btn');
-    if(btn){ btn.textContent=muted?'🔇':'🔊'; btn.classList.toggle('muted',muted); }
-    const st=document.getElementById('ob-sound-toggle');
-    if(st) st.classList.toggle('ob-toggle-on',!muted);
+    const muted = _bgMuted;
+    const btn = document.getElementById('mute-btn');
+    if(btn){ btn.textContent = muted?'🔇':'🔊'; btn.classList.toggle('muted', muted); }
+    const st = document.getElementById('ob-sound-toggle');
+    if(st) st.classList.toggle('ob-toggle-on', !muted);
   },
 
   tryStartMusic(){
-    // Called on first user gesture after settings slide — start music if not muted
-    if(!_bgMuted && !_bgStarted){
-      _bgStarted=true;
-      try{
-        const ctx=getACtx();
-        (ctx.state==='suspended'?ctx.resume():Promise.resolve())
-          .then(()=>bgTick()).catch(()=>bgTick());
-      }catch(e){ bgTick(); }
-    }
+    // Called on any user gesture — unlock AudioContext even if muted
+    // so SFX work later. Music only plays if not muted.
+    _bgUnlockAndStart();
+    if(!_bgMuted && !_bgPaused && _bgTimeout === null) _bgTick();
   },
 
   openPrize(){
     QuestCounters.inc('mq_reels');
     track('reel_opened', {artist: state.currentLevel?.artist||''});
-    try{ getACtx().resume(); }catch(e){}
+    bgPause(); // stop bg music while video plays
     showScreen('win');
     setupWinScreen();
   },
