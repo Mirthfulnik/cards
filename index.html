@@ -114,10 +114,6 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 #home-nickname{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #home-level{font-size:11px;color:var(--text2);margin-top:1px}
 #mute-btn{width:34px;height:34px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:16px;flex-shrink:0;transition:opacity 150ms ease,transform 120ms var(--ease-out)}
-#settings-gear{width:34px;height:34px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:16px;flex-shrink:0;transition:transform 120ms var(--ease-out);position:relative;z-index:20}
-#settings-gear:active{transform:scale(0.88)}
-#settings-flyout{display:flex;align-items:center;gap:6px;overflow:hidden;max-width:0;opacity:0;transition:max-width 280ms cubic-bezier(.34,1.56,.64,1),opacity 200ms ease;pointer-events:none}
-#settings-flyout.open{max-width:140px;opacity:1;pointer-events:auto}
 #ob-replay-btn{width:34px;height:34px;border-radius:50%;background:var(--glass);border:0.5px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:16px;flex-shrink:0;transition:transform 120ms var(--ease-out)}
 #ob-replay-btn:active{transform:scale(0.88)}
 #mute-btn.muted{opacity:0.5}
@@ -279,11 +275,7 @@ body.theme-light .btn-back-win{background:rgba(0,0,0,0.07);border-color:rgba(0,0
 body.theme-light .btn-share{background:rgba(0,0,0,0.07);border-color:rgba(0,0,0,0.15);color:#0a0a14}
 body.theme-light .btn-levels{background:rgba(0,0,0,0.07);border-color:rgba(0,0,0,0.15);color:#0a0a14}
 body.theme-light .btn-back-win,body.theme-light .btn-share{background:rgba(0,0,0,0.08);border-color:rgba(0,0,0,0.18);color:#0a0a14}
-body.theme-light #win-like-btn{position:absolute;bottom:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.35);border:none;font-size:22px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;transition:transform 180ms cubic-bezier(.34,1.56,.64,1);z-index:10}
-#win-like-btn:active{transform:scale(1.25)}
-#win-like-btn.liked{animation:likePop 300ms cubic-bezier(.34,1.56,.64,1)}
-@keyframes likePop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
-#win-levels-fab{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,0.15);color:#0a0a14}
+body.theme-light #win-levels-fab{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,0.15);color:#0a0a14}
 .btn-yandex{background:#FFCC00;color:#080810}
 .btn-vk{background:#0077FF;color:#fff}
 .btn-zvuk{background:#5B3FD6;color:#fff}
@@ -326,27 +318,6 @@ body.theme-light #win-like-btn{position:absolute;bottom:16px;right:16px;width:44
 .rating-loading{text-align:center;padding:20px;color:var(--text3);font-size:13px}
 /* Collection */
 #prof-collection{display:flex;flex-direction:column;gap:8px}
-#screen-reel{background:#000;overflow:hidden;position:relative}
-#reel-viewport{width:100%;height:100%;overflow:hidden}
-#reel-slides{display:flex;flex-direction:column;height:100%;transition:transform 350ms cubic-bezier(.4,0,.2,1);will-change:transform}
-.reel-slide{min-height:100%;width:100%;position:relative;flex-shrink:0}
-.reel-slide video{width:100%;height:100%;object-fit:cover;display:block}
-#reel-overlay{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}
-#reel-back-btn{pointer-events:auto;align-self:flex-start;background:rgba(0,0,0,0.4);border:none;color:#fff;font-size:14px;font-weight:600;font-family:'Outfit',sans-serif;padding:8px 14px;border-radius:20px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-#reel-track-info{pointer-events:none;align-self:flex-start}
-#reel-artist{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.6)}
-#reel-title{font-size:12px;color:rgba(255,255,255,0.8);margin-top:4px;text-shadow:0 1px 4px rgba(0,0,0,0.6)}
-#reel-side-actions{position:absolute;right:12px;bottom:max(80px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:16px;align-items:center;pointer-events:auto}
-.reel-action-btn{background:rgba(0,0,0,0.35);border:none;color:#fff;font-size:22px;width:48px;height:48px;border-radius:50%;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform 150ms ease}
-.reel-action-btn:active{transform:scale(1.2)}
-#reel-like-count{font-size:10px;font-weight:700;font-family:'Outfit',sans-serif;line-height:1}
-#reel-stream-popup{position:absolute;inset:0;z-index:100;display:flex;align-items:flex-end;background:rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity 250ms ease}
-#reel-stream-popup.open{opacity:1;pointer-events:auto}
-#reel-stream-popup-inner{width:100%;background:#1a1a2e;border-radius:24px 24px 0 0;padding:20px 20px max(20px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform 320ms cubic-bezier(.34,1.3,.64,1)}
-#reel-stream-popup.open #reel-stream-popup-inner{transform:translateY(0)}
-#reel-stream-popup-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;text-align:center;margin-bottom:16px;color:#fff}
-#reel-stream-popup-btns{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-#reel-stream-popup-inner button{width:100%;padding:13px;border-radius:14px;border:0.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-size:14px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer}
 .coll-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--glass);border:0.5px solid var(--gb);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity 150ms ease}
 .coll-item:active{opacity:0.7}
 .coll-cover{width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0}
@@ -402,10 +373,6 @@ body.theme-light #win-like-btn{position:absolute;bottom:16px;right:16px;width:44
 
 /* ── WIN LEVELS BTN ── */
 .btn-levels{background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.18);color:#fff}
-#win-like-btn{position:absolute;bottom:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.35);border:none;font-size:22px;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;transition:transform 180ms cubic-bezier(.34,1.56,.64,1);z-index:10}
-#win-like-btn:active{transform:scale(1.25)}
-#win-like-btn.liked{animation:likePop 300ms cubic-bezier(.34,1.56,.64,1)}
-@keyframes likePop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
 #win-levels-fab{position:absolute;top:max(14px,env(safe-area-inset-top));left:14px;z-index:20;background:rgba(8,8,16,0.55);border:0.5px solid rgba(255,255,255,0.25);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:20px;padding:7px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:12px;font-weight:600;font-family:'Outfit',sans-serif;color:#fff;transition:transform 110ms var(--ease-out),opacity 110ms var(--ease-out)}
 #win-levels-fab:active{transform:scale(0.94);opacity:0.8}
 
@@ -791,12 +758,9 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
       <div id="home-nickname">—</div>
       <div id="home-level">🌱 Новичок</div>
     </div>
-    <div id="settings-gear" onclick="App.toggleSettingsMenu()">⚙️</div>
-    <div id="settings-flyout">
-      <div id="ob-replay-btn" onclick="Onboard.start();App.closeSettingsMenu()" title="Обучение">❓</div>
-      <div id="theme-btn" onclick="App.toggleTheme()">🌙</div>
-      <div id="mute-btn" onclick="App.toggleMute()">🔇</div>
-    </div>
+    <div id="ob-replay-btn" onclick="Onboard.start()" title="Обучение">❓</div>
+    <div id="theme-btn" onclick="App.toggleTheme()">🌙</div>
+    <div id="mute-btn" onclick="App.toggleMute()">🔇</div>
   </div>
   <div id="home-stats">
     <div class="home-stat">⭐ <strong id="hs-stars">0</strong> звёзд</div>
@@ -852,7 +816,6 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
 <div id="screen-win" class="screen">
   <div id="win-video-wrap">
     <video id="win-video" playsinline loop muted><source id="win-video-src" src="" type="video/mp4"></video>
-    <button id="win-like-btn" onclick="App.toggleLike()">🤍</button>
     <button id="win-levels-fab" onclick="App.goToLevelsFromWin()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       Уровни
@@ -868,59 +831,24 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
     <div id="mini-info"><div id="mini-artist"></div><div id="mini-title"></div></div>
     <div id="mini-playing">♪</div>
   </div>
-  <!-- Streaming popup -->
-  <div id="stream-popup">
-    <div id="stream-popup-inner">
-      <div id="stream-popup-title">Слушать трек</div>
-      <div id="stream-popup-btns">
-        <a id="spop-yandex" class="spop-btn btn-yandex hidden" onclick="QuestCounters.inc('mq_streams');track('stream_click',{platform:'yandex',artist:state.currentLevel?.artist||''});" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.572 2C9.428 2 7 4.258 7 8.192c0 2.84 1.388 4.755 3.87 5.734L7.1 22h3.045l3.573-7.638h.024V22H16.5V2h-2.928zm0 9.98h-.78V4.34h.78c1.868 0 2.844 1.15 2.844 3.748 0 2.61-.976 3.892-2.844 3.892z"/></svg>Яндекс Музыка</a>
-        <a id="spop-vk"      class="spop-btn btn-vk hidden"       target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.898 7.67c.13-.43 0-.75-.614-.75h-2.032c-.517 0-.755.273-.885.574 0 0-1.033 2.517-2.496 4.15-.473.474-.688.624-.946.624-.13 0-.317-.15-.317-.58V7.67c0-.516-.15-.75-.58-.75H10.3c-.322 0-.516.24-.516.467 0 .49.731.603.806 1.983v2.994c0 .655-.118.773-.376.773-.688 0-2.363-2.529-3.356-5.422C6.664 7.13 6.47 6.92 5.95 6.92H3.917c-.58 0-.696.273-.696.574 0 .537.688 3.196 3.205 6.715 1.678 2.408 4.04 3.714 6.19 3.714 1.29 0 1.45-.29 1.45-.79v-1.827c0-.58.122-.695.53-.695.3 0 .817.15 2.022 1.312 1.377 1.377 1.604 1.994 2.378 1.994h2.033c.58 0 .87-.29.703-.861-.183-.57-.84-1.396-1.72-2.376-.473-.559-1.183-1.162-1.398-1.462-.3-.387-.215-.559 0-.904 0 0 2.473-3.476 2.731-4.658z"/></svg>ВКонтакте</a>
-        <a id="spop-zvuk"    class="spop-btn btn-zvuk hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 14.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9zm0-7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>Звук</a>
-        <a id="spop-kion"    class="spop-btn btn-kion hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>КИОН</a>
-        <a id="spop-spotify" class="spop-btn btn-spotify hidden" onclick="QuestCounters.inc('mq_streams');track('stream_click',{platform:'spotify',artist:state.currentLevel?.artist||''});" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 0 1-.277-1.215c3.809-.87 7.076-.496 9.712 1.115a.623.623 0 0 1 .207.857zm1.223-2.722a.78.78 0 0 1-1.072.257C14.1 12.14 10.539 11.67 7.2 12.656a.78.78 0 0 1-.434-1.495c3.787-1.1 8.003-.567 10.786 1.069a.78.78 0 0 1 .257 1.072zm.105-2.835C15.12 9.174 10.39 9.013 7.2 9.97a.936.936 0 1 1-.543-1.79c3.655-1.11 9.038-.896 12.602 1.232a.935.935 0 0 1-.345 1.455z"/></svg>Spotify</a>
-        <a id="spop-apple"   class="spop-btn btn-apple hidden"   target="_blank"><svg width="13" height="14" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.8 135.4-317.9 269-317.9 100.6 0 164.4 55.8 220.3 55.8 53.3 0 127.3-58.8 238.3-58.8zm-111-192.9c50.7-60.2 86.4-144.1 86.4-228 0-11.1-.6-22.3-2.6-31.4-82.6 3.2-180.9 55.2-239.6 125.7-45.5 52.7-88.9 136.6-88.9 221.9 0 12.3 2 24.6 3.2 28.5 5.2.6 13.6 1.9 22 1.9 73.9 0 165.4-49.4 219.5-118.6z"/></svg>Apple Music</a>
-      </div>
-      <button id="stream-popup-close" onclick="App.closeStreamPopup()">✕ Закрыть</button>
-    </div>
-  </div>
-
   <div id="win-bar-shell">
-    <div id="win-corner-btns">
-      <button class="win-corner-btn win-corner-left" id="btn-next" disabled onclick="App.nextLevel()">
+    <div id="win-buttons">
+      <button class="win-btn btn-next" id="btn-next" disabled onclick="App.nextLevel()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        Следующий
+        Следующий уровень
       </button>
-      <button class="win-corner-btn win-corner-left hidden" id="btn-back-from-win" onclick="App.backFromWin()">← Назад</button>
-      <button class="win-corner-btn win-corner-right" id="btn-listen" onclick="App.openStreamPopup()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        Слушать
-      </button>
-    </div>
-  </div>
-</div>
 
-<!-- REEL VIEWER (TikTok-style collection) -->
-<div id="screen-reel" class="screen">
-  <div id="reel-viewport">
-    <div id="reel-slides"></div>
-  </div>
-  <div id="reel-overlay">
-    <button id="reel-back-btn" onclick="closeReelViewer()">← Назад</button>
-    <div id="reel-track-info">
-      <div id="reel-artist"></div>
-      <div id="reel-title"></div>
-    </div>
-    <div id="reel-side-actions">
-      <button id="reel-like-btn" class="reel-action-btn" onclick="App.toggleReelLike()">🤍<span id="reel-like-count"></span></button>
-      <button class="reel-action-btn" onclick="App.openReelStreamPopup()">🎵</button>
-    </div>
-  </div>
-  <!-- Streaming popup for reel viewer -->
-  <div id="reel-stream-popup">
-    <div id="reel-stream-popup-inner">
-      <div id="reel-stream-popup-title">Слушать трек</div>
-      <div id="reel-stream-popup-btns"></div>
-      <button onclick="App.closeReelStreamPopup()">✕ Закрыть</button>
+      <button class="win-btn btn-back-win hidden" id="btn-back-from-win" onclick="App.backFromWin()">← Назад</button>
+      <button class="win-btn btn-share" onclick="App.share()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Поделиться
+      </button>
+      <a id="btn-yandex" class="win-btn btn-yandex hidden" onclick="QuestCounters.inc('mq_streams');track('stream_click',{platform:'yandex',artist:state.currentLevel?.artist||''});"  target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.572 2C9.428 2 7 4.258 7 8.192c0 2.84 1.388 4.755 3.87 5.734L7.1 22h3.045l3.573-7.638h.024V22H16.5V2h-2.928zm0 9.98h-.78V4.34h.78c1.868 0 2.844 1.15 2.844 3.748 0 2.61-.976 3.892-2.844 3.892z"/></svg>Яндекс</a>
+      <a id="btn-vk"      class="win-btn btn-vk hidden"       target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.898 7.67c.13-.43 0-.75-.614-.75h-2.032c-.517 0-.755.273-.885.574 0 0-1.033 2.517-2.496 4.15-.473.474-.688.624-.946.624-.13 0-.317-.15-.317-.58V7.67c0-.516-.15-.75-.58-.75H10.3c-.322 0-.516.24-.516.467 0 .49.731.603.806 1.983v2.994c0 .655-.118.773-.376.773-.688 0-2.363-2.529-3.356-5.422C6.664 7.13 6.47 6.92 5.95 6.92H3.917c-.58 0-.696.273-.696.574 0 .537.688 3.196 3.205 6.715 1.678 2.408 4.04 3.714 6.19 3.714 1.29 0 1.45-.29 1.45-.79v-1.827c0-.58.122-.695.53-.695.3 0 .817.15 2.022 1.312 1.377 1.377 1.604 1.994 2.378 1.994h2.033c.58 0 .87-.29.703-.861-.183-.57-.84-1.396-1.72-2.376-.473-.559-1.183-1.162-1.398-1.462-.3-.387-.215-.559 0-.904 0 0 2.473-3.476 2.731-4.658z"/></svg>ВК</a>
+      <a id="btn-zvuk"    class="win-btn btn-zvuk hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 14.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9zm0-7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>Звук</a>
+      <a id="btn-kion"    class="win-btn btn-kion hidden"    target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>КИОН</a>
+      <a id="btn-spotify" class="win-btn btn-spotify hidden" onclick="QuestCounters.inc('mq_streams');track('stream_click',{platform:'vk',artist:state.currentLevel?.artist||''});" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 0 1-.277-1.215c3.809-.87 7.076-.496 9.712 1.115a.623.623 0 0 1 .207.857zm1.223-2.722a.78.78 0 0 1-1.072.257C14.1 12.14 10.539 11.67 7.2 12.656a.78.78 0 0 1-.434-1.495c3.787-1.1 8.003-.567 10.786 1.069a.78.78 0 0 1 .257 1.072zm.105-2.835C15.12 9.174 10.39 9.013 7.2 9.97a.936.936 0 1 1-.543-1.79c3.655-1.11 9.038-.896 12.602 1.232a.935.935 0 0 1-.345 1.455z"/></svg>Spotify</a>
+      <a id="btn-apple"   class="win-btn btn-apple hidden"   target="_blank"><svg width="13" height="14" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.8 135.4-317.9 269-317.9 100.6 0 164.4 55.8 220.3 55.8 53.3 0 127.3-58.8 238.3-58.8zm-111-192.9c50.7-60.2 86.4-144.1 86.4-228 0-11.1-.6-22.3-2.6-31.4-82.6 3.2-180.9 55.2-239.6 125.7-45.5 52.7-88.9 136.6-88.9 221.9 0 12.3 2 24.6 3.2 28.5 5.2.6 13.6 1.9 22 1.9 73.9 0 165.4-49.4 219.5-118.6z"/></svg>Apple</a>
     </div>
   </div>
 </div>
@@ -957,18 +885,18 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
     <div id="prof-edit-btn" onclick="App.goToEdit()">✏️ Изменить</div>
   </div>
   <div id="prof-tabs">
-    <div class="prof-tab active" onclick="App.switchTab('rating')">Рейтинг</div>
-    <div class="prof-tab" onclick="App.switchTab('quests')">Задания</div>
+    <div class="prof-tab active" onclick="App.switchTab('quests')">Задания</div>
+    <div class="prof-tab" onclick="App.switchTab('rating')">Рейтинг</div>
     <div class="prof-tab" onclick="App.switchTab('collection')">Коллекция</div>
   </div>
   <div id="prof-content">
-    <div id="prof-rating" class="prof-section show">
-      <div class="prof-label">Топ игроков</div>
-      <div id="prof-rating-list"></div>
-    </div>
-    <div id="prof-quests-tab" class="prof-section">
+    <div id="prof-quests-tab" class="prof-section show">
       <div class="prof-label" style="margin-top:12px">Твои задания</div>
       <div id="prof-quests"></div>
+    </div>
+    <div id="prof-rating" class="prof-section">
+      <div class="prof-label">Топ игроков</div>
+      <div id="prof-rating-list"></div>
     </div>
     <div id="prof-collection-tab" class="prof-section">
       <div id="prof-coll-cta"></div>
@@ -1008,24 +936,6 @@ function track(event, params) {
     // Yandex Metrica
     ym(108678011, 'reachGoal', event, params || {});
   } catch(e) {}
-}
-
-// Like a reel — stored per user per track
-function fbToggleLike(trackId, liked){
-  const nick=Nick.get(); if(!nick) return;
-  const key='likes/'+trackId.replace(/[.#$[\]]/g,'_')+'/'+nick.replace(/[.#$[\]]/g,'_');
-  if(liked){ db.ref(key).set({nick, ts:Date.now()}).catch(()=>{}); }
-  else { db.ref(key).remove().catch(()=>{}); }
-}
-function fbGetLike(trackId, callback){
-  const nick=Nick.get(); if(!nick){ callback(false); return; }
-  const key='likes/'+trackId.replace(/[.#$[\]]/g,'_')+'/'+nick.replace(/[.#$[\]]/g,'_');
-  db.ref(key).once('value', snap=>callback(!!snap.val())).catch(()=>callback(false));
-}
-function fbGetLikeCount(trackId, callback){
-  db.ref('likes/'+trackId.replace(/[.#$[\]]/g,'_')).once('value', snap=>{
-    callback(snap.numChildren());
-  }).catch(()=>callback(0));
 }
 
 // Push score to Firebase — called after each game won
@@ -1432,7 +1342,7 @@ function showScreen(id){
   state.screen=id;
   if(id==='home') renderHome();
   if(id==='levelmap') renderLevelMap();
-  if(id==='profile'){ renderProfile(); renderRating(); track('profile_view'); }
+  if(id==='profile'){ renderProfile(); renderQuests(); renderRating(); renderCollection(); track('profile_view'); }
 }
 
 // ═══════════════════════════════════════
@@ -1487,13 +1397,7 @@ function renderHome(){
   document.getElementById('home-nickname').textContent=nick;
   document.getElementById('home-avatar').textContent=avatar;
   const lv=calcLevel();
-  document.getElementById('home-level').textContent=`${lv.pts} очков`;
-  fbGetRating(players=>{
-    const hasMe=players.some(p=>p.nick===nick);
-    if(!hasMe&&nick){ players.push({nick,avatar:Nick.getAvatar(),score:lv.pts}); players.sort((a,b)=>b.score-a.score); }
-    const pos=players.findIndex(p=>p.nick===nick);
-    if(pos>=0){ const el=document.getElementById('home-level'); if(el) el.textContent=`${lv.pts} очков · #${pos+1} в рейтинге`; }
-  });
+  document.getElementById('home-level').textContent=`${lv.emoji} ${lv.label} · ${lv.pts} очков`;
   const {stars,tracks}=Progress.totalStats();
   document.getElementById('hs-stars').textContent=stars;
   document.getElementById('hs-tracks').textContent=tracks;
@@ -1593,8 +1497,7 @@ function renderLevelMap(){
   // lmap-title removed
   const scroll=document.getElementById('home-lmap-scroll'); if(!scroll) return;
   scroll.innerHTML='';
-  const levelEntries=[...pl.levels.entries()]; // [[i, lvl], ...]
-  levelEntries.forEach(([i,lvl])=>{
+  pl.levels.forEach((lvl,i)=>{
     const prog=Progress.getLevel(pl.id,i);
     const unlocked=Progress.isUnlocked(pl.id,i);
     const completed=!!(prog&&prog.completed);
@@ -1610,7 +1513,7 @@ function renderLevelMap(){
     const starsHtml=[1,2,3].map(s=>`<span class="lmap-star ${s<=stars?'lit':''}">${s<=stars?'⭐':'☆'}</span>`).join('');
 
     const wrap=document.createElement('div'); wrap.className='lmap-level';
-    if(i < pl.levels.length-1){ const conn=document.createElement('div'); conn.className='lmap-connector'; wrap.appendChild(conn); }
+    if(i>0){ const conn=document.createElement('div'); conn.className='lmap-connector'; wrap.appendChild(conn); }
     const card=document.createElement('div'); card.className=cls;
     card.innerHTML=`<div class="lmap-card-inner">
       <div class="lmap-cover-wrap">
@@ -1770,15 +1673,11 @@ function setupWinScreen(){
   }
   Collection.add(lvl);
 
-  // Fill streaming popup buttons
-  const SPOP_MAP={yandex:'spop-yandex',vk:'spop-vk',zvuk:'spop-zvuk',kion:'spop-kion',spotify:'spop-spotify',apple:'spop-apple'};
-  Object.entries(SPOP_MAP).forEach(([key,elId])=>{
-    const el=document.getElementById(elId);
+  PLATFORM_IDS.forEach(key=>{
+    const el=document.getElementById('btn-'+key);
     const url=lvl.links&&lvl.links[key];
     if(url){ el.href=url; el.classList.remove('hidden'); } else { el.classList.add('hidden'); }
   });
-  // Close popup if it was open
-  document.getElementById('stream-popup').classList.remove('open');
 
   document.getElementById('reveal-cover').src=lvl.cover;
   document.getElementById('reveal-artist').textContent=lvl.artist;
@@ -1812,14 +1711,6 @@ function setupWinScreen(){
   const fabLevels=document.getElementById('win-levels-fab');
   if(fabLevels) fabLevels.style.display=state.fromProfile?'none':'flex';
 
-  // Load like state
-  const likeBtn=document.getElementById('win-like-btn');
-  likeBtn.dataset.liked='0'; likeBtn.textContent='🤍';
-  if(lvl.id) fbGetLike(lvl.id, liked=>{
-    likeBtn.dataset.liked=liked?'1':'0';
-    likeBtn.textContent=liked?'❤️':'🤍';
-  });
-
   if(state.fromProfile){
     btnNext.classList.add('hidden'); btnBack.classList.remove('hidden');
     if(_nextRaf){cancelAnimationFrame(_nextRaf);_nextRaf=null;}
@@ -1834,7 +1725,7 @@ function setupWinScreen(){
     btnNext.classList.remove('hidden'); btnBack.classList.add('hidden');
     btnNext.disabled=true; btnNext.classList.remove('unlocked'); btnNext.classList.add('sweeping'); btnNext.style.setProperty('--sweep','0deg');
     if(_nextRaf) cancelAnimationFrame(_nextRaf);
-    const t0=performance.now(),DUR=4000;
+    const t0=performance.now(),DUR=5000;
     function sweepTick(now){
       const p=Math.min((now-t0)/DUR,1);
       btnNext.style.setProperty('--sweep',Math.round(p*360)+'deg');
@@ -1844,137 +1735,6 @@ function setupWinScreen(){
     _nextRaf=requestAnimationFrame(sweepTick);
   }
 }
-
-// ═══ REEL VIEWER (TikTok-style) ═══
-let _reelList = [], _reelIdx = 0, _reelVideos = [];
-
-function openReelViewer(tracks, startIdx){
-  _reelList = tracks;
-  _reelIdx = startIdx;
-  const slides = document.getElementById('reel-slides');
-  slides.innerHTML = '';
-  _reelVideos = [];
-  tracks.forEach((t, i) => {
-    const slide = document.createElement('div');
-    slide.className = 'reel-slide';
-    const vid = document.createElement('video');
-    vid.setAttribute('playsinline', '');
-    vid.setAttribute('loop', '');
-    vid.setAttribute('muted', '');
-    const src = document.createElement('source');
-    src.src = t.video; src.type = 'video/mp4';
-    vid.appendChild(src);
-    slide.appendChild(vid);
-    slides.appendChild(slide);
-    _reelVideos.push(vid);
-  });
-  bgPause();
-  showScreen('reel');
-  _reelGoTo(startIdx, false);
-}
-
-function closeReelViewer(){
-  _reelVideos.forEach(v=>{ v.pause(); v.currentTime=0; });
-  bgResume();
-  showScreen('profile');
-}
-
-function _reelGoTo(idx, animate){
-  _reelIdx = idx;
-  const slides = document.getElementById('reel-slides');
-  if(!animate) slides.style.transition='none';
-  slides.style.transform = `translateY(-${idx * 100}%)`;
-  if(!animate) requestAnimationFrame(()=>{ slides.style.transition=''; });
-
-  // Pause all, play current
-  _reelVideos.forEach((v,i)=>{ if(i!==idx){ v.pause(); v.currentTime=0; } });
-  const cur = _reelVideos[idx];
-  if(cur){ cur.muted=false; cur.play().catch(()=>{ cur.muted=true; cur.play(); }); }
-
-  // Update info
-  const t = _reelList[idx];
-  document.getElementById('reel-artist').textContent = t.artist||'';
-  document.getElementById('reel-title').textContent = t.title||'';
-  document.getElementById('reel-stream-popup').classList.remove('open');
-
-  // Load like state
-  const likeBtn = document.getElementById('reel-like-btn');
-  likeBtn.dataset.liked='0';
-  const likeEmoji = likeBtn.querySelector ? likeBtn : likeBtn;
-  likeBtn.innerHTML='🤍<span id="reel-like-count"></span>';
-  if(t.id){
-    fbGetLike(t.id, liked=>{
-      likeBtn.dataset.liked=liked?'1':'0';
-      likeBtn.innerHTML=(liked?'❤️':'🤍')+'<span id="reel-like-count"></span>';
-    });
-    fbGetLikeCount(t.id, count=>{
-      const el=document.getElementById('reel-like-count');
-      if(el) el.textContent=count>0?count:'';
-    });
-  }
-}
-
-// Swipe handling
-let _reelTouchY = null;
-document.addEventListener('touchstart', e=>{
-  if(document.getElementById('screen-reel').classList.contains('active'))
-    _reelTouchY = e.touches[0].clientY;
-}, {passive:true});
-document.addEventListener('touchend', e=>{
-  if(_reelTouchY===null) return;
-  if(!document.getElementById('screen-reel').classList.contains('active')){ _reelTouchY=null; return; }
-  const dy = _reelTouchY - e.changedTouches[0].clientY;
-  _reelTouchY=null;
-  if(Math.abs(dy)<50) return;
-  if(dy>0 && _reelIdx<_reelList.length-1) _reelGoTo(_reelIdx+1, true);
-  if(dy<0 && _reelIdx>0) _reelGoTo(_reelIdx-1, true);
-}, {passive:true});
-
-// App methods for reel
-const _reelAppMethods = {
-  toggleReelLike(){
-    const t=_reelList[_reelIdx]; if(!t||!t.id) return;
-    const btn=document.getElementById('reel-like-btn');
-    const nowLiked=btn.dataset.liked==='1';
-    const newLiked=!nowLiked;
-    btn.dataset.liked=newLiked?'1':'0';
-    btn.innerHTML=(newLiked?'❤️':'🤍')+'<span id="reel-like-count"></span>';
-    fbToggleLike(t.id, newLiked);
-    fbGetLikeCount(t.id, count=>{
-      const el=document.getElementById('reel-like-count');
-      if(el) el.textContent=count>0?count:'';
-    });
-  },
-  openReelStreamPopup(){
-    const t=_reelList[_reelIdx]; if(!t) return;
-    const btnsEl=document.getElementById('reel-stream-popup-btns');
-    btnsEl.innerHTML='';
-    const PLATFORMS=[
-      {key:'yandex',label:'Яндекс Музыка',cls:'btn-yandex'},
-      {key:'vk',label:'ВКонтакте',cls:'btn-vk'},
-      {key:'zvuk',label:'Звук',cls:'btn-zvuk'},
-      {key:'kion',label:'КИОН',cls:'btn-kion'},
-      {key:'spotify',label:'Spotify',cls:'btn-spotify'},
-      {key:'apple',label:'Apple Music',cls:'btn-apple'},
-    ];
-    let any=false;
-    PLATFORMS.forEach(p=>{
-      const url=t.links&&t.links[p.key];
-      if(!url) return;
-      any=true;
-      const a=document.createElement('a');
-      a.className='spop-btn '+p.cls; a.href=url; a.target='_blank';
-      a.textContent=p.label;
-      a.onclick=()=>{ QuestCounters.inc('mq_streams'); track('stream_click',{platform:p.key,artist:t.artist||''}); };
-      btnsEl.appendChild(a);
-    });
-    if(!any) btnsEl.innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.5);padding:12px">Ссылки недоступны</div>';
-    document.getElementById('reel-stream-popup').classList.add('open');
-  },
-  closeReelStreamPopup(){
-    document.getElementById('reel-stream-popup').classList.remove('open');
-  },
-};
 
 function stopWinVideo(){
   const vid=document.getElementById('win-video'); vid.pause(); vid.currentTime=0;
@@ -2022,16 +1782,7 @@ function renderProfile(){
   document.getElementById('prof-nick').textContent=nick;
   document.getElementById('prof-avatar-display').textContent=avatar;
   const lv=calcLevel();
-  // Show score, update rating position async
-  document.getElementById('prof-level').textContent=`${lv.pts} очков · #⏳`;
-  fbGetRating(players=>{
-    const myScore=lv.pts;
-    const hasMe=players.some(p=>p.nick===nick);
-    if(!hasMe && nick){ players.push({nick,avatar,score:myScore}); players.sort((a,b)=>b.score-a.score); }
-    const pos=players.findIndex(p=>p.nick===nick);
-    const posStr=pos>=0?`#${pos+1}`:'#—';
-    document.getElementById('prof-level').textContent=`${lv.pts} очков · ${posStr} в рейтинге`;
-  });
+  document.getElementById('prof-level').textContent=`${lv.emoji} ${lv.label} · ${lv.pts} очков`;
 }
 
 function renderRating(){
@@ -2121,11 +1872,10 @@ function renderCollection(){
   }
 
   noCollEl.classList.add('hidden');
-  // Simple list — tapping opens fullscreen reel viewer
-  coll.forEach((t,idx)=>{
+  coll.forEach(t=>{
     const item=document.createElement('div'); item.className='coll-item';
     item.innerHTML=`<img class="coll-cover" src="${t.cover}" alt=""><div class="coll-info"><div class="coll-artist">${t.artist}</div><div class="coll-title">${t.title}</div></div><div class="coll-play">▶</div>`;
-    item.addEventListener('click',()=>{ openReelViewer(coll, idx); });
+    item.addEventListener('click',()=>{ state.fromProfile=true; state.currentLevel=t; bgPause(); showScreen('win'); setupWinScreen(); });
     collEl.appendChild(item);
   });
 }
@@ -2232,13 +1982,6 @@ const App = {
     document.getElementById('home-avatar').textContent=Nick.getAvatar();
   },
 
-  toggleSettingsMenu(){
-    document.getElementById('settings-flyout').classList.toggle('open');
-  },
-  closeSettingsMenu(){
-    document.getElementById('settings-flyout').classList.remove('open');
-  },
-
   toggleTheme(){
     const isLight=document.body.classList.toggle('theme-light');
     document.getElementById('theme-btn').textContent=isLight?'🌙':'☀️';
@@ -2278,26 +2021,6 @@ const App = {
       if(_actx && _actx.state === 'suspended') _actx.resume();
       _bgTick();
     }
-  },
-
-  toggleLike(){
-    const lvl=state.currentLevel; if(!lvl||!lvl.id) return;
-    const btn=document.getElementById('win-like-btn');
-    const nowLiked=btn.dataset.liked==='1';
-    const newLiked=!nowLiked;
-    btn.dataset.liked=newLiked?'1':'0';
-    btn.textContent=newLiked?'❤️':'🤍';
-    if(newLiked) btn.classList.add('liked');
-    setTimeout(()=>btn.classList.remove('liked'),400);
-    fbToggleLike(lvl.id, newLiked);
-  },
-
-  openStreamPopup(){
-    const popup=document.getElementById('stream-popup');
-    popup.classList.add('open');
-  },
-  closeStreamPopup(){
-    document.getElementById('stream-popup').classList.remove('open');
   },
 
   openPrize(){
@@ -2348,9 +2071,6 @@ const App = {
     if(tab==='collection') renderCollection();
   },
 };
-
-// Merge reel methods into App
-Object.assign(App, _reelAppMethods);
 
 // ═══════════════════════════════════════
 // ONBOARDING
