@@ -1019,9 +1019,9 @@ const BG_NOTES = [220, 261.63, 329.63, 392, 329.63, 261.63];
 function _bgTick(){
   clearTimeout(_bgTimeout);
   _bgTimeout = null;
-  if(_bgMuted || _bgPaused) return;
+  if(!_bgStarted || _bgMuted || _bgPaused) return;
   try{
-    const ctx = _getCtx(); if(!ctx || ctx.state !== 'running') return;
+    const ctx = _actx; if(!ctx || ctx.state !== 'running') return;
     const osc = ctx.createOscillator(), gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass'; filter.frequency.value = 1200;
@@ -1041,8 +1041,29 @@ function _bgTick(){
 function _bgUnlockAndStart(){
   if(_bgStarted) return;
   _bgStarted = true;
-  _getCtx(); // creates + synchronously resumes AudioContext
-  if(!_bgMuted && !_bgPaused) _bgTick();
+  // Safari: create AudioContext AND play first note in the SAME gesture stack.
+  // Any separation (setTimeout, .then, rAF) loses the trusted event.
+  try{
+    if(!_actx){ _actx = new AudioCtx(); }
+    _actx.resume(); // synchronous call — no .then()
+    if(!_bgMuted && !_bgPaused){
+      // Play first note immediately, right here, in this call stack
+      const ctx = _actx;
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass'; filter.frequency.value = 1200;
+      osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(BG_NOTES[_bgStep], ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
+      _bgStep = (_bgStep + 1) % BG_NOTES.length;
+      // Schedule the rest of the loop
+      _bgTimeout = setTimeout(_bgTick, 350);
+    }
+  }catch(e){}
 }
 
 // Pause bg music (when video starts)
@@ -1956,17 +1977,19 @@ const App = {
   },
 
   toggleMute(){
-    // SYNCHRONOUS — must stay in gesture call stack for Safari
+    // Must stay fully synchronous — Safari invalidates gesture after any async gap
     _bgMuted = !_bgMuted;
     if(!_bgMuted){
-      // Turning ON: unlock AudioContext + start loop
-      _bgUnlockAndStart();
-      if(_bgStarted && !_bgPaused && _bgTimeout === null) _bgTick();
+      if(!_bgStarted){
+        _bgUnlockAndStart(); // plays first note + schedules loop inside gesture stack
+      } else {
+        // Already unlocked — just resume ctx and restart loop
+        if(_actx && _actx.state === 'suspended') _actx.resume();
+        if(!_bgPaused && _bgTimeout === null) _bgTick();
+      }
     } else {
-      // Turning OFF: stop loop
       clearTimeout(_bgTimeout); _bgTimeout = null;
     }
-    // Sync UI
     const muted = _bgMuted;
     const btn = document.getElementById('mute-btn');
     if(btn){ btn.textContent = muted?'🔇':'🔊'; btn.classList.toggle('muted', muted); }
@@ -1975,10 +1998,14 @@ const App = {
   },
 
   tryStartMusic(){
-    // Called on any user gesture — unlock AudioContext even if muted
-    // so SFX work later. Music only plays if not muted.
-    _bgUnlockAndStart();
-    if(!_bgMuted && !_bgPaused && _bgTimeout === null) _bgTick();
+    // Called on any user gesture (e.g. "Готово" button)
+    // Unlocks AudioContext in gesture stack so SFX work later
+    if(!_bgStarted){
+      _bgUnlockAndStart(); // handles music start if not muted
+    } else if(!_bgMuted && !_bgPaused && _bgTimeout === null){
+      if(_actx && _actx.state === 'suspended') _actx.resume();
+      _bgTick();
+    }
   },
 
   openPrize(){
