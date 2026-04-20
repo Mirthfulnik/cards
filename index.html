@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Mirazh</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>🎴</text></svg>">
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Outfit:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -292,10 +295,12 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 #prof-rating-list{display:flex;flex-direction:column;gap:6px}
 .rating-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--glass);border:0.5px solid var(--gb)}
 .rating-row.me{background:linear-gradient(145deg,rgba(255,204,0,0.1),rgba(255,107,53,0.07));border-color:rgba(255,204,0,0.3)}
-.rating-pos{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:900;width:24px;text-align:center;color:var(--text3)}
+.rating-pos{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:900;width:24px;text-align:center;color:var(--text3);flex-shrink:0}
 .rating-pos.top{color:var(--accent)}
+.rating-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .rating-nick{flex:1;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rating-score{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--accent)}
+.rating-score{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0}
+.rating-loading{text-align:center;padding:20px;color:var(--text3);font-size:13px}
 /* Collection */
 #prof-collection{display:flex;flex-direction:column;gap:8px}
 .coll-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--glass);border:0.5px solid var(--gb);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity 150ms ease}
@@ -471,6 +476,13 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
 @keyframes obFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 
 /* CTA button */
+#ob-settings-rows{width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.ob-setting-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--glass);border:0.5px solid var(--gb);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 150ms ease;text-align:left}
+.ob-setting-row:active{background:rgba(255,204,0,0.08)}
+body.theme-light .ob-setting-row{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.10)}
+.ob-setting-icon{font-size:22px;flex-shrink:0}
+.ob-setting-label{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+.ob-setting-val{font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0}
 .ob-btn{margin-top:20px;padding:14px 32px;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out);width:100%}
 .ob-btn:active{transform:scale(0.97);opacity:0.85}
 .prof-cta-btn{width:100%;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:14px;font-family:'Outfit',sans-serif;padding:14px;margin-bottom:4px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
@@ -549,6 +561,25 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
   <div id="ob-skip" onclick="Onboard.finish()">Пропустить</div>
 
   <div id="ob-slides">
+    <!-- Slide 0: Settings (theme + sound) -->
+    <div class="ob-slide">
+      <div class="ob-title" style="margin-bottom:8px">Настрой под себя</div>
+      <div class="ob-sub" style="margin-bottom:28px">Эти настройки можно изменить позже</div>
+      <div id="ob-settings-rows">
+        <div class="ob-setting-row" onclick="App.toggleTheme(); this.querySelector('.ob-setting-val').textContent=document.body.classList.contains('theme-light')?'☀️ Светлая':'🌙 Тёмная'">
+          <div class="ob-setting-icon">🎨</div>
+          <div class="ob-setting-label">Тема оформления</div>
+          <div class="ob-setting-val" id="ob-theme-val">☀️ Светлая</div>
+        </div>
+        <div class="ob-setting-row" onclick="App.toggleMute(); this.querySelector('.ob-setting-val').textContent=document.getElementById('mute-btn').textContent==='🔇'?'🔇 Выкл':'🎵 Вкл'">
+          <div class="ob-setting-icon">🔊</div>
+          <div class="ob-setting-label">Фоновая музыка</div>
+          <div class="ob-setting-val" id="ob-sound-val">🎵 Вкл</div>
+        </div>
+      </div>
+      <button class="ob-btn" onclick="Onboard.next()">Готово →</button>
+    </div>
+
     <!-- Slide 1: Welcome -->
     <div class="ob-slide">
       <div id="ob-avatar-big">🎮</div>
@@ -626,6 +657,7 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
 
   <div id="ob-dots">
     <div class="ob-dot active"></div>
+    <div class="ob-dot"></div>
     <div class="ob-dot"></div>
     <div class="ob-dot"></div>
     <div class="ob-dot"></div>
@@ -842,6 +874,43 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
 </div>
 
 <script src="playlists.js"></script>
+<script>
+// ═══════════════════════════════════════
+// FIREBASE INIT
+// ═══════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBmGsNIzj-v04_04cpPD3wkGGOJ8DPoRoY",
+  authDomain: "mirazh-86fb4.firebaseapp.com",
+  databaseURL: "https://mirazh-86fb4-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mirazh-86fb4",
+  storageBucket: "mirazh-86fb4.firebasestorage.app",
+  messagingSenderId: "422774196378",
+  appId: "1:422774196378:web:0fab8fc51a02097c997723"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Push score to Firebase — called after each game won
+function fbPushScore(){
+  const nick = Nick.get();
+  const avatar = Nick.getAvatar();
+  const score = calcLevel().pts;
+  if(!nick) return;
+  db.ref('ratings/' + nick.replace(/[.#$[\]]/g,'_')).set({ nick, avatar, score })
+    .catch(()=>{});
+}
+
+// Fetch real ratings from Firebase
+function fbGetRating(callback){
+  db.ref('ratings').orderByChild('score').limitToLast(50)
+    .once('value', snap=>{
+      const data = snap.val() || {};
+      const players = Object.values(data).sort((a,b)=>b.score-a.score);
+      callback(players);
+    })
+    .catch(()=> callback([]));
+}
+</script>
 <script>
 // ═══════════════════════════════════════
 // AUDIO ENGINE
@@ -1501,6 +1570,7 @@ function onGameWon(){
 
   SFX.win();
   flash();
+  fbPushScore();
   showScreen('result');
 }
 
@@ -1624,14 +1694,31 @@ function renderProfile(){
 function renderRating(){
   const ratingList=document.getElementById('prof-rating-list');
   if(!ratingList) return;
-  ratingList.innerHTML='';
-  const players=getRating();
-  players.slice(0,15).forEach((p,i)=>{
-    const row=document.createElement('div');
-    row.className='rating-row'+(p.isMe?' me':'');
-    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-    row.innerHTML=`<div class="rating-pos ${i<3?'top':''}">${medal||i+1}</div><div class="rating-nick">${p.nick}${p.isMe?' (ты)':''}</div><div class="rating-score">${p.score}</div>`;
-    ratingList.appendChild(row);
+  ratingList.innerHTML='<div class="rating-loading">⏳ Загрузка...</div>';
+  const myNick=Nick.get();
+  fbGetRating(players=>{
+    ratingList.innerHTML='';
+    if(!players.length){
+      ratingList.innerHTML='<div class="rating-loading">Ещё нет игроков — будь первым!</div>';
+      return;
+    }
+    // Ensure current user is in list
+    const myScore=calcLevel().pts;
+    const hasMe=players.some(p=>p.nick===myNick);
+    if(!hasMe && myNick){ players.push({nick:myNick,avatar:Nick.getAvatar(),score:myScore}); players.sort((a,b)=>b.score-a.score); }
+    players.slice(0,20).forEach((p,i)=>{
+      const isMe=p.nick===myNick;
+      const row=document.createElement('div');
+      row.className='rating-row'+(isMe?' me':'');
+      const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      const av=p.avatar||'🎮';
+      row.innerHTML=`
+        <div class="rating-pos ${i<3?'top':''}">${medal||i+1}</div>
+        <div class="rating-avatar">${av}</div>
+        <div class="rating-nick">${p.nick}${isMe?' (ты)':''}</div>
+        <div class="rating-score">${p.score}</div>`;
+      ratingList.appendChild(row);
+    });
   });
 }
 
@@ -1869,10 +1956,15 @@ const App = {
 const Onboard = {
   _step: 0,
   _demoTimer: null,
-  _total: 5,
+  _total: 6,
 
   start() {
     this._step = 0;
+    // Sync settings slide with current state
+    const themeVal = document.getElementById('ob-theme-val');
+    if(themeVal) themeVal.textContent = document.body.classList.contains('theme-light')?'☀️ Светлая':'🌙 Тёмная';
+    const soundVal = document.getElementById('ob-sound-val');
+    if(soundVal) soundVal.textContent = _bgMuted?'🔇 Выкл':'🎵 Вкл';
     // Fill dynamic content
     const avatar = Nick.getAvatar();
     const nick = Nick.get();
