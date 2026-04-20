@@ -491,6 +491,8 @@ body.theme-light .ob-setting-row{background:rgba(0,0,0,0.04);border-color:rgba(0
 .ob-setting-icon{font-size:22px;flex-shrink:0}
 .ob-setting-label{flex:1;font-size:14px;font-weight:600;color:var(--text)}
 .ob-setting-val{font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0}
+.ob-back-btn{align-self:flex-start;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:4px 0;margin-bottom:8px;transition:color 120ms ease}
+.ob-back-btn:active{color:var(--text)}
 .ob-btn{margin-top:20px;padding:14px 32px;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out);width:100%}
 .ob-btn:active{transform:scale(0.97);opacity:0.85}
 .prof-cta-btn{width:100%;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:14px;font-family:'Outfit',sans-serif;padding:14px;margin-bottom:4px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
@@ -569,8 +571,16 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
   <div id="ob-skip" onclick="track('onboard_skip',{step:Onboard._step});Onboard.finish()">Пропустить</div>
 
   <div id="ob-slides">
-    <!-- Slide 0: Settings (theme + sound) -->
+    <!-- Slide 0: Welcome -->
     <div class="ob-slide">
+      <div id="ob-avatar-big">🎮</div>
+      <div id="ob-welcome-nick">Привет!</div>
+      <div id="ob-welcome-sub" style="font-size:14px;color:var(--text2);margin-top:10px">Добро пожаловать в Mirazh</div>
+    </div>
+
+    <!-- Slide 1: Settings (theme + sound) -->
+    <div class="ob-slide">
+      <div class="ob-back-btn" onclick="Onboard.prev()">← Назад</div>
       <div class="ob-title" style="margin-bottom:8px">Настрой под себя</div>
       <div class="ob-sub" style="margin-bottom:28px">Эти настройки можно изменить позже</div>
       <div id="ob-settings-rows">
@@ -588,14 +598,9 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
       <button class="ob-btn" onclick="Onboard.next()">Готово →</button>
     </div>
 
-    <!-- Slide 1: Welcome -->
-    <div class="ob-slide">
-      <div id="ob-avatar-big">🎮</div>
-      <div id="ob-welcome-nick">Привет!</div>
-    </div>
-
     <!-- Slide 2: How to play -->
     <div class="ob-slide">
+      <div class="ob-back-btn" onclick="Onboard.prev()">← Назад</div>
       <div class="ob-title" style="margin-bottom:16px">Находи пары</div>
       <div id="ob-demo-grid">
         <div class="ob-card" id="obc-0"></div>
@@ -610,7 +615,8 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
 
     <!-- Slide 3: Prize -->
     <div class="ob-slide">
-      <div class="ob-title" style="margin-bottom:16px">Собирай уникальные клипы известных артистов</div>
+      <div class="ob-back-btn" onclick="Onboard.prev()">← Назад</div>
+      <div class="ob-title" style="margin-bottom:16px">Собирай уникальные клипы</div>
       <div id="ob-gift-anim">🎁</div>
       <img id="ob-prize-cover" src="" alt="">
       <button class="ob-btn" onclick="Onboard.next()">Гаааз!</button>
@@ -618,6 +624,7 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
 
     <!-- Slide 4: Quests -->
     <div class="ob-slide">
+      <div class="ob-back-btn" onclick="Onboard.prev()">← Назад</div>
       <div class="ob-title" style="margin-bottom:16px">Выполняй задания и копи баллы</div>
       <div id="ob-quests-preview">
         <div class="ob-quest-row">
@@ -647,6 +654,7 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
 
     <!-- Slide 5: Level map -->
     <div class="ob-slide">
+      <div class="ob-back-btn" onclick="Onboard.prev()">← Назад</div>
       <div id="ob-tooltip">Твой первый уровень 👇</div>
       <div id="ob-lmap-preview">
         <div id="ob-lmap-inner">
@@ -699,8 +707,9 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
     <div id="avatar-selected-big">🎮</div>
     <div id="avatar-emoji-grid"></div>
   </div>
-  <div id="avatar-sticky">
-    <button id="avatar-confirm" onclick="App.saveAvatar()">Далее →</button>
+  <div id="avatar-sticky" style="display:flex;gap:10px">
+    <button onclick="showScreen('nickname')" style="flex:0 0 auto;border-radius:16px;border:0.5px solid var(--gb);background:var(--glass);color:var(--text);font-size:14px;font-weight:600;font-family:'Outfit',sans-serif;padding:16px 18px;cursor:pointer;-webkit-tap-highlight-color:transparent">← Назад</button>
+    <button id="avatar-confirm" onclick="App.saveAvatar()" style="flex:1">Далее →</button>
   </div>
 </div>
 
@@ -719,8 +728,9 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
     <div class="genres-section-label">🌍 Зарубежная музыка</div>
     <div class="genres-pills-row" id="genres-int"></div>
   </div>
-  <div id="genres-sticky">
-    <button id="genres-confirm" onclick="App.saveGenres()">Начать играть →</button>
+  <div id="genres-sticky" style="display:flex;gap:10px">
+    <button onclick="showScreen('avatar')" style="flex:0 0 auto;border-radius:16px;border:0.5px solid var(--gb);background:var(--glass);color:var(--text);font-size:14px;font-weight:600;font-family:'Outfit',sans-serif;padding:16px 18px;cursor:pointer;-webkit-tap-highlight-color:transparent">← Назад</button>
+    <button id="genres-confirm" onclick="App.saveGenres()" style="flex:1">Начать играть →</button>
   </div>
 </div>
 
@@ -1832,8 +1842,13 @@ const App = {
   },
 
   resetGame(){
-    if(!confirm('Сбросить весь прогресс? Звёзды, рекорды и коллекция будут удалены. Ник и аватар сохранятся.')) return;
-    // Clear progress keys
+    if(!confirm('Сбросить весь прогресс? Звёзды, рекорды, коллекция и рейтинг будут удалены. Ник и аватар сохранятся.')) return;
+    // Remove from Firebase rating
+    try{
+      const nick=Nick.get();
+      if(nick) db.ref('ratings/'+nick.replace(/[.#$[\]]/g,'_')).remove();
+    }catch(e){}
+    // Clear localStorage
     try{
       const keep=[Nick.key, Nick.avatarKey, 'mirazh_rating_seed'];
       Object.keys(localStorage).forEach(k=>{
@@ -2017,40 +2032,37 @@ const Onboard = {
 
   _goTo(step) {
     this._step = step;
-    // Slide
     const slides = document.getElementById('ob-slides');
     if (slides) slides.style.transform = `translateX(-${step * 100}%)`;
-    // Dots
     document.querySelectorAll('.ob-dot').forEach((d, i) => d.classList.toggle('active', i === step));
     // Step-specific init
-    if (step === 0) this._initStep1();
-    if (step === 1) this._initStep2();
-    if (step === 2) this._initStep3();
+    if (step === 0) this._initWelcome();
+    if (step === 2) this._initDemo();
+    if (step === 3) this._initPrize();
   },
 
-  _initStep1() {
-    // Auto advance after 2s
+  _initWelcome() {
+    // Auto advance after 2s on welcome
     setTimeout(() => { if (this._step === 0) this.next(); }, 2000);
   },
 
-  _initStep2() {
+  _initDemo() {
     // Live demo: pairs [0,3]=🎵  [1,4]=🎸  [2,5]=🎤
     const PAIRS = ['🎵','🎸','🎤','🎵','🎸','🎤'];
     const cards = Array.from({length:6}, (_,i) => document.getElementById('obc-'+i));
-    // Reset
     cards.forEach(c => { c.classList.remove('flipped','matched'); c.textContent = ''; });
     const demo = [[0,3],[1,4],[2,5]];
     let si = 0;
     const runPair = () => {
-      if (this._step !== 1) return;
+      if (this._step !== 2) return;
       if (si >= demo.length) { setTimeout(() => { cards.forEach(c=>{c.classList.remove('flipped','matched');c.textContent='';}); si=0; setTimeout(runPair,400); }, 600); return; }
       const [a,b] = demo[si++];
       cards[a].textContent = PAIRS[a]; cards[a].classList.add('flipped');
       setTimeout(() => {
-        if(this._step!==1) return;
+        if(this._step!==2) return;
         cards[b].textContent = PAIRS[b]; cards[b].classList.add('flipped');
         setTimeout(() => {
-          if(this._step!==1) return;
+          if(this._step!==2) return;
           cards[a].classList.add('matched'); cards[b].classList.add('matched');
           setTimeout(runPair, 500);
         }, 600);
@@ -2060,8 +2072,7 @@ const Onboard = {
     setTimeout(runPair, 500);
   },
 
-  _initStep3() {
-    // Animate prize cover
+  _initPrize() {
     const cover = document.getElementById('ob-prize-cover');
     cover.classList.remove('show');
     setTimeout(() => cover.classList.add('show'), 300);
@@ -2072,6 +2083,12 @@ const Onboard = {
       this._goTo(this._step + 1);
     } else {
       this.finish();
+    }
+  },
+
+  prev() {
+    if (this._step > 0) {
+      this._goTo(this._step - 1);
     }
   },
 
