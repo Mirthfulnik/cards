@@ -1487,7 +1487,13 @@ function renderHome(){
   document.getElementById('home-nickname').textContent=nick;
   document.getElementById('home-avatar').textContent=avatar;
   const lv=calcLevel();
-  document.getElementById('home-level').textContent=`${lv.emoji} ${lv.label} · ${lv.pts} очков`;
+  document.getElementById('home-level').textContent=`${lv.pts} очков`;
+  fbGetRating(players=>{
+    const hasMe=players.some(p=>p.nick===nick);
+    if(!hasMe&&nick){ players.push({nick,avatar:Nick.getAvatar(),score:lv.pts}); players.sort((a,b)=>b.score-a.score); }
+    const pos=players.findIndex(p=>p.nick===nick);
+    if(pos>=0){ const el=document.getElementById('home-level'); if(el) el.textContent=`${lv.pts} очков · #${pos+1} в рейтинге`; }
+  });
   const {stars,tracks}=Progress.totalStats();
   document.getElementById('hs-stars').textContent=stars;
   document.getElementById('hs-tracks').textContent=tracks;
@@ -1969,7 +1975,6 @@ const _reelAppMethods = {
     document.getElementById('reel-stream-popup').classList.remove('open');
   },
 };
-Object.assign(App, _reelAppMethods);
 
 function stopWinVideo(){
   const vid=document.getElementById('win-video'); vid.pause(); vid.currentTime=0;
@@ -2343,6 +2348,9 @@ const App = {
     if(tab==='collection') renderCollection();
   },
 };
+
+// Merge reel methods into App
+Object.assign(App, _reelAppMethods);
 
 // ═══════════════════════════════════════
 // ONBOARDING
