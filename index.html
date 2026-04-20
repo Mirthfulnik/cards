@@ -22,9 +22,10 @@ body.theme-light{
   --bg:#f2f2f7;--bg2:#ffffff;--dark:#f2f2f7;
   --glass:rgba(0,0,0,0.04);--gb:rgba(0,0,0,0.10);--gs:rgba(255,255,255,0.80);
   --text:#0a0a14;--text2:rgba(10,10,20,0.50);--text3:rgba(10,10,20,0.28);
+  --accent:#E07800;
 }
 body.theme-light #screen-splash{background:#f2f2f7}
-body.theme-light #screen-onboard,body.theme-light #screen-home,body.theme-light #screen-nickname,body.theme-light #nick-sticky,body.theme-light #screen-profile,body.theme-light #screen-edit,body.theme-light #screen-result{background:var(--bg)}
+body.theme-light #screen-onboard,body.theme-light #screen-home,body.theme-light #screen-nickname,body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light #nick-sticky,body.theme-light #avatar-sticky,body.theme-light #genres-sticky,body.theme-light #screen-profile,body.theme-light #screen-edit,body.theme-light #screen-result{background:var(--bg)}
 body.theme-light #game-bg::after{background:rgba(242,242,247,0.65)}
 body.theme-light .card-back{background:rgba(0,0,0,0.07);border-color:rgba(0,0,0,0.12);color:rgba(0,0,0,0.2)}
 body.theme-light .card-front{background:rgba(255,255,255,0.92);border-color:rgba(0,0,0,0.15)}
@@ -84,7 +85,7 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Outfit',sans-serif
 /* ══ NICKNAME ══ */
 #screen-nickname{background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0}
 #nick-logo{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
-#nick-sub{font-size:13px;color:var(--text2);margin-bottom:48px;text-align:center}
+#nick-sub{font-size:13px;color:var(--text2);margin-bottom:32px;text-align:center}
 #nick-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:10px;align-self:flex-start;width:100%}
 #nick-input-wrap{width:100%;border-radius:18px;padding:1.5px;background:linear-gradient(135deg,rgba(255,204,0,0.4),rgba(255,107,53,0.2));margin-bottom:14px}
 #nick-input{width:100%;border-radius:calc(18px - 1.5px);background:rgba(255,255,255,0.06);border:none;outline:none;padding:16px 18px;font-size:16px;font-family:'Outfit',sans-serif;color:#fff;font-weight:500;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08)}
@@ -474,6 +475,49 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
 .ob-btn:active{transform:scale(0.97);opacity:0.85}
 .prof-cta-btn{width:100%;border-radius:16px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:14px;font-family:'Outfit',sans-serif;padding:14px;margin-bottom:4px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
 .prof-cta-btn:active{transform:scale(0.97);opacity:0.85}
+
+/* ── SCREEN AVATAR ── */
+#screen-avatar{background:var(--bg)}
+#avatar-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;align-items:center;padding:max(40px,env(safe-area-inset-top)) 28px 16px;width:100%}
+#avatar-scroll::-webkit-scrollbar{display:none}
+#avatar-sticky{flex-shrink:0;padding:12px 28px;padding-bottom:max(20px,env(safe-area-inset-bottom));background:var(--bg);border-top:0.5px solid var(--gb);width:100%}
+#avatar-logo{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+#avatar-step{font-size:11px;color:var(--text3);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em}
+#avatar-sub{font-size:13px;color:var(--text2);margin-bottom:28px;text-align:center}
+#avatar-selected-big{font-size:64px;line-height:1;text-align:center;margin-bottom:8px;transition:transform 180ms var(--ease-out)}
+#avatar-selected-big.pop{animation:avatarPop 200ms var(--ease-out)}
+@keyframes avatarPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+#avatar-emoji-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:16px}
+#avatar-confirm{width:100%;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;padding:16px;margin:0;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
+#avatar-confirm:active{transform:scale(0.97);opacity:0.85}
+
+/* ── SCREEN GENRES ── */
+#screen-genres{background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
+#genres-header{flex-shrink:0;padding:max(20px,env(safe-area-inset-top)) 20px 0}
+#genres-step{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+#genres-title{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:900;margin-bottom:4px;color:var(--text)}
+#genres-sub{font-size:13px;color:var(--text2);margin-bottom:12px}
+#genres-limit{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:12px}
+/* Selected pills row */
+#genres-selected-wrap{min-height:40px;display:flex;flex-wrap:wrap;gap:6px;padding:0 20px 10px;border-bottom:0.5px solid var(--gb)}
+.genre-sel-pill{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#080810;font-size:12px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:pillPop 180ms var(--ease-out)}
+@keyframes pillPop{0%{transform:scale(0.7);opacity:0}100%{transform:scale(1);opacity:1}}
+.genre-sel-x{font-size:14px;opacity:0.6;margin-left:2px}
+#genres-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 20px 0}
+#genres-scroll::-webkit-scrollbar{display:none}
+.genres-section-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:10px;margin-top:4px}
+.genres-pills-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.genre-pill{padding:8px 16px;border-radius:20px;border:1.5px solid var(--gb);background:var(--glass);font-size:13px;font-weight:500;color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 140ms var(--ease-out)}
+.genre-pill:active{transform:scale(0.94)}
+.genre-pill.selected{border-color:var(--accent);background:rgba(255,204,0,0.12);color:var(--accent);font-weight:700}
+.genre-pill.disabled{opacity:0.35;cursor:not-allowed}
+body.theme-light .genre-pill{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.12)}
+body.theme-light .genre-pill.selected{background:rgba(255,204,0,0.15);border-color:var(--accent)}
+#genres-sticky{flex-shrink:0;padding:12px 20px;padding-bottom:max(20px,env(safe-area-inset-bottom));background:var(--bg);border-top:0.5px solid var(--gb)}
+#genres-confirm{width:100%;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;padding:16px;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out)}
+#genres-confirm:active{transform:scale(0.97);opacity:0.85}
+#genres-confirm:disabled{opacity:0.35;cursor:not-allowed}
+body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light #avatar-sticky,body.theme-light #genres-sticky{background:var(--bg)}
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){.screen,.card-inner,.win-btn,.lmap-card{transition:opacity 150ms ease!important;transform:none!important;animation:none!important}.card.matched{opacity:0!important}#gift-btn{animation:none!important}}
 </style>
@@ -590,22 +634,53 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
 </div>
 
 <!-- NICKNAME -->
+<!-- STEP 1: NICKNAME -->
 <div id="screen-nickname" class="screen">
   <div id="nick-scroll">
     <div id="nick-logo">Mirazh</div>
-    <div id="nick-sub">Музыкальные мемо</div>
-    <div id="nick-emoji-pick"></div>
-    <div id="nick-selected-wrap">
-      <div id="nick-selected-avatar">🎮</div>
-      <div id="nick-selected-label">Твой аватар</div>
-    </div>
+    <div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Шаг 1 из 3</div>
+    <div id="nick-sub">Как тебя зовут?</div>
     <div id="nick-label">Никнейм</div>
     <div id="nick-input-wrap">
-      <input id="nick-input" type="text" maxlength="16" placeholder="Твое имя" autocomplete="off" autocorrect="off" spellcheck="false">
+      <input id="nick-input" type="text" maxlength="16" placeholder="Введи никнейм..." autocomplete="off" autocorrect="off" spellcheck="false">
     </div>
   </div>
   <div id="nick-sticky">
-    <button id="nick-confirm" disabled onclick="App.saveNickname()">Начать играть</button>
+    <button id="nick-confirm" disabled onclick="App.saveNickname()">Далее →</button>
+  </div>
+</div>
+
+<!-- STEP 2: AVATAR -->
+<div id="screen-avatar" class="screen">
+  <div id="avatar-scroll">
+    <div id="avatar-logo">Mirazh</div>
+    <div id="avatar-step">Шаг 2 из 3</div>
+    <div id="avatar-sub">Выбери аватар</div>
+    <div id="avatar-selected-big">🎮</div>
+    <div id="avatar-emoji-grid"></div>
+  </div>
+  <div id="avatar-sticky">
+    <button id="avatar-confirm" onclick="App.saveAvatar()">Далее →</button>
+  </div>
+</div>
+
+<!-- STEP 3: GENRES -->
+<div id="screen-genres" class="screen">
+  <div id="genres-header">
+    <div id="genres-step">Шаг 3 из 3</div>
+    <div id="genres-title">Твои жанры</div>
+    <div id="genres-sub">Выбери до 5 жанров которые тебе нравятся</div>
+    <div id="genres-limit">Выбрано: <span id="genres-count">0</span>/5</div>
+  </div>
+  <div id="genres-selected-wrap"></div>
+  <div id="genres-scroll">
+    <div class="genres-section-label">🇷🇺 Русская музыка</div>
+    <div class="genres-pills-row" id="genres-ru"></div>
+    <div class="genres-section-label">🌍 Зарубежная музыка</div>
+    <div class="genres-pills-row" id="genres-int"></div>
+  </div>
+  <div id="genres-sticky">
+    <button id="genres-confirm" onclick="App.saveGenres()">Начать играть →</button>
   </div>
 </div>
 
@@ -1662,8 +1737,22 @@ const App = {
     const val=document.getElementById('nick-input').value.trim();
     if(!val) return;
     Nick.set(val);
+    // Go to avatar selection
+    showScreen('avatar');
+  },
+
+  saveAvatar(){
+    Nick.setAvatar(_selectedAvatar);
+    // Go to genre selection
+    initGenresScreen();
+    showScreen('genres');
+  },
+
+  saveGenres(){
+    // Save genres
+    try{ localStorage.setItem(Nick_genres_key, JSON.stringify([..._selectedGenres])); }catch(e){}
     startBgMusic();
-    // New user — show onboarding
+    // Start onboarding
     Onboard.start();
   },
 
@@ -1880,6 +1969,104 @@ const nickInput=document.getElementById('nick-input');
 const nickConfirm=document.getElementById('nick-confirm');
 nickInput.addEventListener('input',()=>{ nickConfirm.disabled=nickInput.value.trim().length<2; });
 nickInput.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!nickConfirm.disabled) App.saveNickname(); });
+
+// ── AVATAR SCREEN ──
+const AVATAR_EMOJIS_LIST = ['🎮','🎵','🎸','🎤','🎧','🎹','🏆','⭐','🔥','🦁','🐺','🦊','🐯','🦋','🌟','💎','🚀','🎯','🎪','🎭','🌙','❤️','🍀','🎁','👑','⚡','🌊','🎲','🦅','🐉'];
+let _selectedAvatar = '🎮';
+(function initAvatarScreen(){
+  const grid = document.getElementById('avatar-emoji-grid');
+  if(!grid||!grid.appendChild) return;
+  AVATAR_EMOJIS_LIST.forEach((e,i)=>{
+    const btn = document.createElement('div');
+    btn.className = 'ep-btn' + (i===0?' selected':'');
+    btn.textContent = e; btn.dataset.emoji = e;
+    btn.addEventListener('click',()=>{
+      grid.querySelectorAll('.ep-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _selectedAvatar = e;
+      const big = document.getElementById('avatar-selected-big');
+      big.textContent = e;
+      big.classList.remove('pop');
+      requestAnimationFrame(()=>requestAnimationFrame(()=>big.classList.add('pop')));
+    });
+    grid.appendChild(btn);
+  });
+})();
+
+// ── GENRES SCREEN ──
+const GENRES_RU = ['Поп','Рэп / Хип-хоп','R&B','Электронная','Рок','Инди','Фолк','Джаз','Классика','Ретро / Советская'];
+const GENRES_INT = ['Pop','Hip-Hop','R&B / Soul','Electronic','Rock','Indie','K-Pop','Latin','Jazz','Classical','Afrobeats','Lo-fi'];
+const Nick_genres_key = 'mirazh_genres';
+let _selectedGenres = new Set();
+
+function initGenresScreen(){
+  _selectedGenres = new Set();
+  document.getElementById('genres-count').textContent = '0';
+  document.getElementById('genres-selected-wrap').innerHTML = '';
+  ['ru','int'].forEach(type=>{
+    const container = document.getElementById('genres-'+type);
+    if(!container) return;
+    container.innerHTML = '';
+    const list = type==='ru'?GENRES_RU:GENRES_INT;
+    list.forEach(g=>{
+      const pill = document.createElement('div');
+      pill.className = 'genre-pill';
+      pill.textContent = g;
+      pill.dataset.genre = g;
+      pill.addEventListener('click',()=>toggleGenre(g, pill));
+      container.appendChild(pill);
+    });
+  });
+  updateGenresConfirm();
+}
+
+function toggleGenre(g, pill){
+  if(_selectedGenres.has(g)){
+    _selectedGenres.delete(g);
+    pill.classList.remove('selected');
+  } else {
+    if(_selectedGenres.size>=5) return;
+    _selectedGenres.add(g);
+    pill.classList.add('selected');
+  }
+  // Update disabled state
+  const atMax = _selectedGenres.size>=5;
+  document.querySelectorAll('.genre-pill:not(.selected)').forEach(p=>{
+    p.classList.toggle('disabled', atMax);
+  });
+  document.getElementById('genres-count').textContent = _selectedGenres.size;
+  renderSelectedGenres();
+  updateGenresConfirm();
+}
+
+function renderSelectedGenres(){
+  const wrap = document.getElementById('genres-selected-wrap');
+  wrap.innerHTML = '';
+  _selectedGenres.forEach(g=>{
+    const pill = document.createElement('div');
+    pill.className = 'genre-sel-pill';
+    pill.innerHTML = g + '<span class="genre-sel-x">×</span>';
+    pill.addEventListener('click',()=>{
+      // Find and deselect the main pill
+      document.querySelectorAll('.genre-pill').forEach(p=>{
+        if(p.dataset.genre===g){ p.classList.remove('selected'); }
+      });
+      toggleGenre(g, {classList:{has:()=>true,remove:()=>{},add:()=>{}}});
+      _selectedGenres.delete(g);
+      document.getElementById('genres-count').textContent = _selectedGenres.size;
+      const atMax = _selectedGenres.size>=5;
+      document.querySelectorAll('.genre-pill:not(.selected)').forEach(p=>p.classList.toggle('disabled',atMax));
+      renderSelectedGenres();
+      updateGenresConfirm();
+    });
+    wrap.appendChild(pill);
+  });
+}
+
+function updateGenresConfirm(){
+  // Can proceed with 0 genres (skip allowed) or any selection
+  document.getElementById('genres-confirm').disabled = false;
+}
 // Init emoji picker on nickname screen
 (function(){
   const pick=document.getElementById('nick-emoji-pick');
