@@ -493,11 +493,16 @@ body.theme-light #ob-lmap-inner{background:rgba(0,0,0,0.05)}
 /* CTA button */
 #ob-settings-rows{width:100%;display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
 .ob-setting-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;background:var(--glass);border:0.5px solid var(--gb);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background 150ms ease;text-align:left}
-.ob-setting-row:active{background:rgba(255,204,0,0.08)}
+.ob-setting-row:active{background:rgba(255,204,0,0.06)}
 body.theme-light .ob-setting-row{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.10)}
 .ob-setting-icon{font-size:22px;flex-shrink:0}
 .ob-setting-label{flex:1;font-size:14px;font-weight:600;color:var(--text)}
-.ob-setting-val{font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0}
+.ob-toggle{width:50px;height:28px;border-radius:14px;background:rgba(255,255,255,0.15);border:0.5px solid rgba(255,255,255,0.15);position:relative;flex-shrink:0;transition:background 250ms ease,border-color 250ms ease}
+.ob-toggle.ob-toggle-on{background:var(--accent);border-color:var(--accent)}
+.ob-toggle-thumb{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);transition:transform 250ms cubic-bezier(.34,1.56,.64,1)}
+.ob-toggle.ob-toggle-on .ob-toggle-thumb{transform:translateX(22px)}
+body.theme-light .ob-toggle{background:rgba(0,0,0,0.12);border-color:rgba(0,0,0,0.12)}
+body.theme-light .ob-toggle.ob-toggle-on{background:var(--accent);border-color:var(--accent)}
 .ob-back-btn{align-self:flex-start;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;-webkit-tap-highlight-color:transparent;padding:4px 0;margin-bottom:8px;transition:color 120ms ease}
 .ob-back-btn:active{color:var(--text)}
 .ob-btn{margin-top:20px;padding:14px 32px;border-radius:20px;border:none;cursor:pointer;background:linear-gradient(120deg,var(--accent),#FF9500);color:#080810;font-weight:700;font-size:15px;font-family:'Outfit',sans-serif;-webkit-tap-highlight-color:transparent;transition:transform 120ms var(--ease-out),opacity 120ms var(--ease-out);width:100%}
@@ -591,18 +596,22 @@ body.theme-light #screen-avatar,body.theme-light #screen-genres,body.theme-light
       <div class="ob-title" style="margin-bottom:8px">Настрой под себя</div>
       <div class="ob-sub" style="margin-bottom:28px">Эти настройки можно изменить позже</div>
       <div id="ob-settings-rows">
-        <div class="ob-setting-row" onclick="App.toggleTheme(); this.querySelector('.ob-setting-val').textContent=document.body.classList.contains('theme-light')?'☀️ Светлая':'🌙 Тёмная'">
+        <div class="ob-setting-row" onclick="App.toggleTheme()">
           <div class="ob-setting-icon">🎨</div>
           <div class="ob-setting-label">Тема оформления</div>
-          <div class="ob-setting-val" id="ob-theme-val">☀️ Светлая</div>
+          <div class="ob-toggle" id="ob-theme-toggle">
+            <div class="ob-toggle-thumb"></div>
+          </div>
         </div>
         <div class="ob-setting-row" onclick="App.toggleMute()">
           <div class="ob-setting-icon">🔊</div>
           <div class="ob-setting-label">Фоновая музыка</div>
-          <div class="ob-setting-val" id="ob-sound-val">🎵 Вкл</div>
+          <div class="ob-toggle" id="ob-sound-toggle">
+            <div class="ob-toggle-thumb"></div>
+          </div>
         </div>
       </div>
-      <button class="ob-btn" onclick="Onboard.next()">Готово →</button>
+      <button class="ob-btn" onclick="App.tryStartMusic();Onboard.next()">Готово →</button>
     </div>
 
     <!-- Slide 2: How to play -->
@@ -988,7 +997,7 @@ const SFX = {
 };
 
 // BG MUSIC — generative A-minor arpeggion
-let _bgNodes = [], _bgMuted = false, _bgStarted = false;
+let _bgNodes = [], _bgMuted = true, _bgStarted = false;
 const BG_NOTES = [220,261.63,329.63,392,329.63,261.63]; // A3 C4 E4 G4 E4 C4
 let _bgStep = 0, _bgTimeout = null;
 
@@ -1886,7 +1895,6 @@ const App = {
   saveGenres(){
     try{ localStorage.setItem(Nick_genres_key, JSON.stringify([..._selectedGenres])); }catch(e){}
     track('registration_complete', {genres_count: _selectedGenres.size});
-    startBgMusic();
     Onboard.start();
   },
 
@@ -1929,35 +1937,48 @@ const App = {
     document.getElementById('theme-btn').textContent=isLight?'🌙':'☀️';
     try{ localStorage.setItem('mirazh_theme',isLight?'light':'dark'); }catch(e){}
     track('theme_toggle', {theme: isLight?'light':'dark'});
+    const tt=document.getElementById('ob-theme-toggle');
+    if(tt) tt.classList.toggle('ob-toggle-on', isLight);
   },
 
   toggleMute(){
-    const btn=document.getElementById('mute-btn');
-    if(!_bgStarted){
-      // First ever tap — start music (needs user gesture for AudioContext)
-      _bgStarted=true;
-      _bgMuted=false;
+    // Toggle mute state
+    _bgMuted = !_bgMuted;
+
+    if(!_bgMuted && !_bgStarted){
+      // User wants music ON and it was never started — start now (user gesture!)
+      _bgStarted = true;
       try{
         const ctx=getACtx();
         (ctx.state==='suspended'?ctx.resume():Promise.resolve())
           .then(()=>bgTick()).catch(()=>bgTick());
       }catch(e){ bgTick(); }
-    } else {
-      _bgMuted=!_bgMuted;
-      if(!_bgMuted){
-        // Unmuting — ensure AudioContext running and restart loop if stopped
-        try{
-          const ctx=getACtx();
-          (ctx.state==='suspended'?ctx.resume():Promise.resolve())
-            .then(()=>{ if(_bgTimeout===null) bgTick(); }).catch(()=>{});
-        }catch(e){ if(_bgTimeout===null) bgTick(); }
-      }
+    } else if(!_bgMuted && _bgStarted){
+      // Was muted, now unmuting — resume if needed
+      try{
+        const ctx=getACtx();
+        (ctx.state==='suspended'?ctx.resume():Promise.resolve())
+          .then(()=>{ if(_bgTimeout===null) bgTick(); }).catch(()=>{});
+      }catch(e){ if(_bgTimeout===null) bgTick(); }
     }
-    // Sync all UI indicators
+    // Sync UI
     const muted=_bgMuted;
+    const btn=document.getElementById('mute-btn');
     if(btn){ btn.textContent=muted?'🔇':'🔊'; btn.classList.toggle('muted',muted); }
-    const sv=document.getElementById('ob-sound-val');
-    if(sv) sv.textContent=muted?'🔇 Выкл':'🔊 Вкл';
+    const st=document.getElementById('ob-sound-toggle');
+    if(st) st.classList.toggle('ob-toggle-on',!muted);
+  },
+
+  tryStartMusic(){
+    // Called on first user gesture after settings slide — start music if not muted
+    if(!_bgMuted && !_bgStarted){
+      _bgStarted=true;
+      try{
+        const ctx=getACtx();
+        (ctx.state==='suspended'?ctx.resume():Promise.resolve())
+          .then(()=>bgTick()).catch(()=>bgTick());
+      }catch(e){ bgTick(); }
+    }
   },
 
   openPrize(){
@@ -2021,11 +2042,11 @@ const Onboard = {
     this._step = 0;
     // Mark as onboarded immediately so returning users skip it
     try { localStorage.setItem('mirazh_onboarded', '1'); } catch(e) {}
-    // Sync settings slide with current state
-    const themeVal = document.getElementById('ob-theme-val');
-    if(themeVal) themeVal.textContent = document.body.classList.contains('theme-light')?'☀️ Светлая':'🌙 Тёмная';
-    const soundVal = document.getElementById('ob-sound-val');
-    if(soundVal) soundVal.textContent = _bgMuted?'🔇 Выкл':'🎵 Вкл';
+    // Sync settings toggles with current state
+    const themeToggle = document.getElementById('ob-theme-toggle');
+    if(themeToggle) themeToggle.classList.toggle('ob-toggle-on', document.body.classList.contains('theme-light'));
+    const soundToggle = document.getElementById('ob-sound-toggle');
+    if(soundToggle) soundToggle.classList.toggle('ob-toggle-on', false);
     // Fill dynamic content
     const avatar = Nick.getAvatar();
     const nick = Nick.get();
