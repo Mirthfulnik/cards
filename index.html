@@ -1149,7 +1149,7 @@ const Collection = {
     try{
       const list=this.get();
       if(!list.find(l=>l.id===level.id)){
-        list.push({id:level.id,artist:level.artist,title:level.title,cover:level.cover,video:level.video,date:Date.now()});
+        list.push({id:level.id,artist:level.artist,title:level.title,cover:level.cover,video:level.video,links:level.links||{},date:Date.now()});
         localStorage.setItem(this.key,JSON.stringify(list));
       }
     }catch{}
@@ -1663,7 +1663,14 @@ function onGameWon(){
 // ═══════════════════════════════════════
 let _nextRaf=null;
 function setupWinScreen(){
-  const lvl=state.currentLevel;
+  let lvl=state.currentLevel;
+  // Если links отсутствует (старая запись коллекции) — ищем в PLAYLISTS по id
+  if(!lvl.links){
+    for(const pl of PLAYLISTS){
+      const found=pl.levels.find(l=>l.id===lvl.id);
+      if(found){ lvl=found; state.currentLevel=lvl; break; }
+    }
+  }
   Collection.add(lvl);
 
   PLATFORM_IDS.forEach(key=>{
